@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 510650c117b4447f90b1a9a8f54d31b7, type: 3}
+  m_Name: Game Settings
+  m_EditorClassIdentifier: 
+  FieldSettings: {fileID: 11400000, guid: 66c7c0284faafcd44bac961f62225ca9, type: 2}
+  PlayerSettings: {fileID: 11400000, guid: 5b3232c500c74824b8baf7a59672c0ba, type: 2}
+  AsteroidSettings: {fileID: 11400000, guid: 7b173dad6c9397d48830797a1c0a1991, type: 2}
+  AsteroidPieceSettings: {fileID: 11400000, guid: 7b173dad6c9397d48830797a1c0a1991, type: 2}
+  SaucerSettings: {fileID: 11400000, guid: b747cc5b2efbcd64db9c4aae3089ff27, type: 2}
