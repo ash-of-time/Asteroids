@@ -6,6 +6,7 @@ namespace Model
     public class EnemySettings : GameModelSettings
     {
         public int InitialCount;
+        public int MaxCount;
         public int CreateCooldown;
         public int PlayerMinimumDistance;
     }

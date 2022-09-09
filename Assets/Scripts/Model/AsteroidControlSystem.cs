@@ -2,9 +2,9 @@
 
 namespace Model
 {
-    public class AsteroidCreationSystem : EnemyCreationSystem<Asteroid>
+    public class AsteroidControlSystem : EnemyControlSystem<Asteroid>
     {
-        public AsteroidCreationSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
+        public AsteroidControlSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
         {
         }
 

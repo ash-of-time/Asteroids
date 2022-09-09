@@ -2,9 +2,9 @@
 
 namespace Model
 {
-    public class SaucerCreationSystem : EnemyCreationSystem<Saucer>
+    public class SaucerControlSystem : EnemyControlSystem<Saucer>
     {
-        public SaucerCreationSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
+        public SaucerControlSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
         {
         }
 

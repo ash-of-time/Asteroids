@@ -1,33 +1,48 @@
-﻿namespace Model
+﻿using System;
+using Tools;
+
+namespace Model
 {
-    public class Game
+    public class Game : IInitializeSystem, IExecuteSystem
     {
         public Player Player;
-        public AsteroidCreationSystem AsteroidsCreationSystem;
-        public SaucerCreationSystem SaucersCreationSystem;
+        public AsteroidControlSystem AsteroidsControlSystem;
+        public SaucerControlSystem SaucersControlSystem;
         
         public readonly GameSettings GameSettings;
+
+        public event Action GameStopped;
 
         public Game(GameSettings gameSettings)
         {
             GameSettings = gameSettings;
-            Init();
+            Initialize();
         }
 
-        public void Init()
+        public void Initialize()
         {
             var field = new Field(GameSettings.FieldSettings);
             
             Player = new Player(GameSettings.PlayerSettings, field);
             
-            AsteroidsCreationSystem = new AsteroidCreationSystem(GameSettings.AsteroidSettings, field, Player);
-            SaucersCreationSystem = new SaucerCreationSystem(GameSettings.SaucerSettings, field, Player);
+            AsteroidsControlSystem = new AsteroidControlSystem(GameSettings.AsteroidSettings, field, Player);
+            SaucersControlSystem = new SaucerControlSystem(GameSettings.SaucerSettings, field, Player);
+        }
+
+        public void Execute()
+        {
+            Player.Update();
         }
 
         public void Start()
         {
-            AsteroidsCreationSystem.Start();
-            SaucersCreationSystem.Start();
+            AsteroidsControlSystem.Initialize();
+            SaucersControlSystem.Initialize();
+        }
+
+        public void Stop()
+        {
+            GameStopped?.Invoke();
         }
     }
 }

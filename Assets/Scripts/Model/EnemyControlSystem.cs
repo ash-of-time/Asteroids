@@ -1,28 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using Tools;
 using UnityEngine;
 
 namespace Model
 {
-    public abstract class EnemyCreationSystem<T> where T : Enemy
+    public abstract class EnemyControlSystem<T> : IInitializeSystem, IExecuteSystem where T : Enemy
     {
         protected readonly EnemySettings EnemySettings;
         protected readonly Field Field;
         protected readonly Player Player;
+        private List<T> _enemyList;
 
         public event Action<T, GameModelSettings> EnemyCreated;
 
-        protected EnemyCreationSystem(EnemySettings enemySettings, Field field, Player player)
+        protected EnemyControlSystem(EnemySettings enemySettings, Field field, Player player)
         {
             EnemySettings = enemySettings;
             Field = field;
             Player = player;
+            _enemyList = new List<T>(enemySettings.MaxCount);
         }
 
-        public void Start()
+        public void Initialize()
         {
             for (var i = 0; i < EnemySettings.InitialCount; i++)
             {
                 CreateEnemy();
+            }
+        }
+
+        public void Execute()
+        {
+            foreach (var enemy in _enemyList)
+            {
+                enemy.Update();
             }
         }
 
@@ -32,6 +44,7 @@ namespace Model
         {
             var position = Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
             var enemy = CreateEnemyObject(position, EnemySettings);
+            _enemyList.Add(enemy);
             EnemyCreated?.Invoke(enemy, EnemySettings);
         }
     }
