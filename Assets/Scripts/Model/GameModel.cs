@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Tools;
+﻿using Tools;
 using UnityEngine;
 
 namespace Model
@@ -7,6 +6,7 @@ namespace Model
     public abstract class GameModel : IUpdatable
     {
         protected readonly GameModelSettings Settings;
+        protected readonly Field Field;
 
         public ReactiveProperty<Vector3> ReactivePosition { get; } = new();
 
@@ -26,20 +26,21 @@ namespace Model
 
         public Vector3 ForwardDirection => Rotation * Vector3.forward;
 
-        protected GameModel(Vector3 position, GameModelSettings settings)
+        protected GameModel(Vector3 position, GameModelSettings settings, Field field)
         {
             Position = position;
             Settings = settings;
+            Field = field;
         }
 
-        public void Update()
+        public virtual void Update()
         {
-            Rotate();
             Move();
         }
 
-        protected abstract void Rotate();
-
-        protected abstract void Move();
+        protected virtual void Move()
+        {
+            Position = Field.GetPointFromOtherSideIfOutOfField(Position);
+        }
     }
 }

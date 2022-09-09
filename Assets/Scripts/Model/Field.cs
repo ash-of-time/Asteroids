@@ -33,5 +33,23 @@ namespace Model
 
             return position;
         }
+
+        public Vector3 GetPointFromOtherSideIfOutOfField(Vector3 point)
+        {
+            var x = point.x;
+            var z = point.z;
+            
+            if (x < -HalfWidth)
+                x = HalfWidth;
+            else if (point.x > HalfWidth)
+                x = -HalfWidth;
+            
+            if (z < -HalfHeight)
+                z = HalfHeight;
+            else if (z > HalfHeight)
+                z = -HalfHeight;
+
+            return new Vector3(x, 0, z);
+        }
     }
 }

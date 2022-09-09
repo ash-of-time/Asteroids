@@ -8,9 +8,9 @@ namespace Model
         {
         }
 
-        protected override Saucer CreateEnemyObject(Vector3 position, EnemySettings asteroidSettings)
+        protected override Saucer CreateEnemyObject(Vector3 position)
         {
-            return new Saucer(position, asteroidSettings);
+            return new Saucer(position, EnemySettings, Player, Field);
         }
     }
 }

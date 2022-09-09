@@ -2,7 +2,7 @@
 
 namespace Model
 {
-    public class Player : GameModel
+    public class Player : GameModel, IPlayer
     {
         private Vector3 _velocityDirection = Vector3.zero;
         private Vector3 _currentVelocityVector;
@@ -12,8 +12,22 @@ namespace Model
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
 
-        public Player(PlayerSettings playerSettings, Field field) : base(playerSettings.InitialPosition, playerSettings)
+        public Player(PlayerSettings playerSettings, Field field) : base(playerSettings.InitialPosition, playerSettings, field)
         {
+        }
+        
+        public void Fire()
+        {
+        }
+
+        public void AlternativeFire()
+        {
+        }
+
+        public override void Update()
+        {
+            Rotate();
+            base.Update();
         }
 
         protected override void Move()
@@ -34,19 +48,13 @@ namespace Model
                 return;
 
             Position += _currentVelocityVector * Time.deltaTime;
+            
+            base.Move();
         }
 
-        protected override void Rotate()
+        private void Rotate()
         {
             Rotation *= Quaternion.Euler(Vector3.up * (GivenRotation * PlayerSettings.RotationSpeed * Time.deltaTime));
-        }
-
-        public void Fire()
-        {
-        }
-
-        public void AlternativeFire()
-        {
         }
     }
 }

@@ -32,6 +32,8 @@ namespace Model
         public void Execute()
         {
             Player.Update();
+            AsteroidsControlSystem.Execute();
+            SaucersControlSystem.Execute();
         }
 
         public void Start()

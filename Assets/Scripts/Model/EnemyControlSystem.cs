@@ -38,12 +38,12 @@ namespace Model
             }
         }
 
-        protected abstract T CreateEnemyObject(Vector3 position, EnemySettings asteroidSettings);
+        protected abstract T CreateEnemyObject(Vector3 position);
 
         private void CreateEnemy()
         {
             var position = Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
-            var enemy = CreateEnemyObject(position, EnemySettings);
+            var enemy = CreateEnemyObject(position);
             _enemyList.Add(enemy);
             EnemyCreated?.Invoke(enemy, EnemySettings);
         }

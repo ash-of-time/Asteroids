@@ -8,9 +8,9 @@ namespace Model
         {
         }
 
-        protected override Asteroid CreateEnemyObject(Vector3 position, EnemySettings asteroidSettings)
+        protected override Asteroid CreateEnemyObject(Vector3 position)
         {
-            return new Asteroid(position, asteroidSettings);
+            return new Asteroid(position, EnemySettings, Field);
         }
     }
 }
