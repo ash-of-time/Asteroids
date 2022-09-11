@@ -17,8 +17,15 @@ namespace View
         {
             var presenter = _pool.Get().GetComponent<Presenter>();
             presenter.Model = model;
+            presenter.ModelDestroyed += OnModelDestroyed;
         }
         
+        protected override void OnModelDestroyed(Presenter presenter)
+        {
+            presenter.ModelDestroyed -= OnModelDestroyed;
+            _pool.Release(presenter.gameObject);
+        }
+
         private GameObject InstantiateView()
         {
             return Object.Instantiate(ControlSystem.GameModelSettings.Prefab);

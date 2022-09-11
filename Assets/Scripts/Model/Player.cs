@@ -56,5 +56,11 @@ namespace Model
         {
             Rotation *= Quaternion.Euler(Vector3.up * (GivenRotation * PlayerSettings.RotationSpeed * Time.deltaTime));
         }
+        
+        // todo remove Temp
+        public override void Collide(GameModel gameModel)
+        {
+            // do nothing
+        }
     }
 }

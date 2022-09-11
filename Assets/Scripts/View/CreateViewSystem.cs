@@ -21,6 +21,12 @@ namespace View
         {
             var presenter = Object.Instantiate(ControlSystem.GameModelSettings.Prefab, model.Position, model.Rotation).GetComponent<Presenter>();
             presenter.Model = model;
+            presenter.ModelDestroyed += OnModelDestroyed;
+        }
+        
+        protected virtual void OnModelDestroyed(Presenter presenter)
+        {
+            Object.Destroy(presenter.gameObject);
         }
 
         private void OnGameStooped()

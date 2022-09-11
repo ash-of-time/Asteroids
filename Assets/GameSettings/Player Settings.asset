@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3368916564331560363, guid: b3c0a61dfe701344d819eb701e83f4b7, type: 3}
   MaxVelocity: 15
+  Acceleration: 15
+  Deceleration: 10
+  RotationSpeed: 90
+  InitialPosition: {x: 0, y: 0, z: 0}
+  FireRate: 1
+  AlternativeFireCooldown: 10

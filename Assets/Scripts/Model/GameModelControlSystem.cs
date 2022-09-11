@@ -33,7 +33,7 @@ namespace Model
             return gameModel;
         }
         
-        private void OnGameModelDestroyed(GameModel enemy)
+        protected virtual void OnGameModelDestroyed(GameModel enemy)
         {
             enemy.Destroyed -= OnGameModelDestroyed;
             GameModelDestroyed?.Invoke(enemy);

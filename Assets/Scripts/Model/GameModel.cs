@@ -41,9 +41,19 @@ namespace Model
             Move();
         }
 
+        public virtual void Collide(GameModel gameModel)
+        {
+            Destroy();
+        }
+
         protected virtual void Move()
         {
             Position = _field.GetPointFromOtherSideIfOutOfField(Position);
+        }
+
+        private void Destroy()
+        {
+            Destroyed?.Invoke(this);
         }
     }
 }

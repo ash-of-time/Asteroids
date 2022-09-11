@@ -8,5 +8,13 @@ namespace Model
         {
             
         }
+
+        public override void Collide(GameModel gameModel)
+        {
+            if (gameModel is Enemy)
+                return;
+            
+            base.Collide(gameModel);
+        }
     }
 }

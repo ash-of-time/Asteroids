@@ -37,7 +37,15 @@ namespace Model
         {
             var gameModel = base.CreateGameModel(position);
             _enemyList.Add(gameModel);
+            
             return gameModel;
+        }
+
+        protected override void OnGameModelDestroyed(GameModel enemy)
+        {
+            _enemyList.Remove(enemy);
+            
+            base.OnGameModelDestroyed(enemy);
         }
     }
 }

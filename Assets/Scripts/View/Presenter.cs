@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using System;
+using Model;
 using UnityEngine;
 
 namespace View
@@ -6,6 +7,8 @@ namespace View
     public class Presenter : MonoBehaviour
     {
         protected GameModel GameModel;
+
+        public event Action<Presenter> ModelDestroyed;
 
         public GameModel Model
         {
@@ -19,6 +22,14 @@ namespace View
                 GameModel.ReactiveRotation.Changed += RotationChanged;
                 GameModel.Destroyed += OnGameModelDestroyed;
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.TryGetComponent<Presenter>(out var otherPresenter))
+                return;
+            
+            Model.Collide(otherPresenter.Model);
         }
 
         private void PositionChanged(Vector3 position)
@@ -39,7 +50,7 @@ namespace View
 
             GameModel = null;
             
-            Destroy(this);
+            ModelDestroyed?.Invoke(this);
         }
     }
 }
