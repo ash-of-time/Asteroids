@@ -2,13 +2,13 @@
 
 namespace Model
 {
-    public class SaucerControlSystem : EnemyControlSystem<Saucer>
+    public class SaucerControlSystem : EnemyControlSystem
     {
-        public SaucerControlSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
+        public SaucerControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field, player)
         {
         }
 
-        protected override Saucer CreateEnemyObject(Vector3 position)
+        protected override GameModel CreateGameModelObject(Vector3 position)
         {
             return new Saucer(position, EnemySettings, Player, Field);
         }

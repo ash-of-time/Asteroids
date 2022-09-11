@@ -5,23 +5,20 @@ namespace View
 {
     public class Presenter : MonoBehaviour
     {
-        protected GameModel _model;
+        protected GameModel GameModel;
 
         public GameModel Model
         {
-            get => _model;
+            get => GameModel;
             set
             {
-                _model = value;
-                _model.ReactivePosition.Changed += PositionChanged;
-                _model.ReactiveRotation.Changed += RotationChanged;
+                GameModel = value;
+                PositionChanged(GameModel.Position);
+                RotationChanged(GameModel.Rotation);
+                GameModel.ReactivePosition.Changed += PositionChanged;
+                GameModel.ReactiveRotation.Changed += RotationChanged;
+                GameModel.Destroyed += OnGameModelDestroyed;
             }
-        }
-        
-        private void OnDestroy()
-        {
-            _model.ReactivePosition.Changed -= PositionChanged;
-            _model.ReactiveRotation.Changed -= RotationChanged;
         }
 
         private void PositionChanged(Vector3 position)
@@ -32,6 +29,17 @@ namespace View
         private void RotationChanged(Quaternion rotation)
         {
             transform.rotation = rotation;
+        }
+        
+        private void OnGameModelDestroyed(GameModel model)
+        {
+            GameModel.ReactivePosition.Changed -= PositionChanged;
+            GameModel.ReactiveRotation.Changed -= RotationChanged;
+            GameModel.Destroyed -= OnGameModelDestroyed;
+
+            GameModel = null;
+            
+            Destroy(this);
         }
     }
 }

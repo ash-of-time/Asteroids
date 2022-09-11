@@ -1,4 +1,5 @@
-﻿using Tools;
+﻿using System;
+using Tools;
 using UnityEngine;
 
 namespace Model
@@ -6,14 +7,14 @@ namespace Model
     public abstract class GameModel : IUpdatable
     {
         protected readonly GameModelSettings Settings;
-        protected readonly Field Field;
+        private readonly IField _field;
 
         public ReactiveProperty<Vector3> ReactivePosition { get; } = new();
 
         public Vector3 Position
         {
             get => ReactivePosition.Get();
-            set => ReactivePosition.Set(value);
+            protected set => ReactivePosition.Set(value);
         }
 
         public ReactiveProperty<Quaternion> ReactiveRotation { get; } = new(Quaternion.identity);
@@ -21,16 +22,18 @@ namespace Model
         public Quaternion Rotation
         {
             get => ReactiveRotation.Get();
-            set => ReactiveRotation.Set(value);
+            protected set => ReactiveRotation.Set(value);
         }
 
         public Vector3 ForwardDirection => Rotation * Vector3.forward;
 
-        protected GameModel(Vector3 position, GameModelSettings settings, Field field)
+        public event Action<GameModel> Destroyed;
+
+        protected GameModel(Vector3 position, GameModelSettings settings, IField field)
         {
             Position = position;
             Settings = settings;
-            Field = field;
+            _field = field;
         }
 
         public virtual void Update()
@@ -40,7 +43,7 @@ namespace Model
 
         protected virtual void Move()
         {
-            Position = Field.GetPointFromOtherSideIfOutOfField(Position);
+            Position = _field.GetPointFromOtherSideIfOutOfField(Position);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Model;
+﻿using Model;
 using UnityEngine;
 
 namespace View
@@ -12,10 +11,21 @@ namespace View
         private void Start()
         {
             _game = new Game(_gameSettings);
+
+            _game.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
+            _game.EnemyControlSystemCreated += OnEnemyControlSystemCreated;
             
-            var createViewSystem = new CreateViewSystem(_game);
-            
-            _game.Start();
+            _game.Initialize();
+        }
+
+        private void OnPlayerControlSystemCreated(GameModelControlSystem system)
+        {
+            new CreateViewSystem(_game, system);
+        }
+        
+        private void OnEnemyControlSystemCreated(GameModelControlSystem system)
+        {
+            new CreateViewSystemWithPool(_game, system);
         }
 
         private void Update()
@@ -25,6 +35,8 @@ namespace View
 
         private void OnDestroy()
         {
+            _game.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
+            _game.EnemyControlSystemCreated -= OnEnemyControlSystemCreated;
             _game.Stop();
         }
     }

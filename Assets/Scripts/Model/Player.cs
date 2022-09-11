@@ -12,7 +12,7 @@ namespace Model
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
 
-        public Player(PlayerSettings playerSettings, Field field) : base(playerSettings.InitialPosition, playerSettings, field)
+        public Player(Vector3 position, PlayerSettings playerSettings, IField field) : base(position, playerSettings, field)
         {
         }
         

@@ -2,13 +2,13 @@
 
 namespace Model
 {
-    public class AsteroidControlSystem : EnemyControlSystem<Asteroid>
+    public class AsteroidControlSystem : EnemyControlSystem
     {
-        public AsteroidControlSystem(EnemySettings enemySettings, Field field, Player player) : base(enemySettings, field, player)
+        public AsteroidControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field, player)
         {
         }
 
-        protected override Asteroid CreateEnemyObject(Vector3 position)
+        protected override GameModel CreateGameModelObject(Vector3 position)
         {
             return new Asteroid(position, EnemySettings, Field);
         }

@@ -1,36 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using Tools;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Model
 {
-    public abstract class EnemyControlSystem<T> : IInitializeSystem, IExecuteSystem where T : Enemy
+    public abstract class EnemyControlSystem : GameModelControlSystem
     {
-        protected readonly EnemySettings EnemySettings;
-        protected readonly Field Field;
-        protected readonly Player Player;
-        private List<T> _enemyList;
+        protected readonly GameModel Player;
+        private readonly List<GameModel> _enemyList;
+        
+        protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
 
-        public event Action<T, GameModelSettings> EnemyCreated;
-
-        protected EnemyControlSystem(EnemySettings enemySettings, Field field, Player player)
+        protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field)
         {
-            EnemySettings = enemySettings;
-            Field = field;
             Player = player;
-            _enemyList = new List<T>(enemySettings.MaxCount);
+            _enemyList = new List<GameModel>(enemySettings.MaxCount);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             for (var i = 0; i < EnemySettings.InitialCount; i++)
             {
-                CreateEnemy();
+                var position = Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
+                CreateGameModel(position);
             }
         }
 
-        public void Execute()
+        public override void Execute()
         {
             foreach (var enemy in _enemyList)
             {
@@ -38,14 +33,11 @@ namespace Model
             }
         }
 
-        protected abstract T CreateEnemyObject(Vector3 position);
-
-        private void CreateEnemy()
+        protected override GameModel CreateGameModel(Vector3 position)
         {
-            var position = Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
-            var enemy = CreateEnemyObject(position);
-            _enemyList.Add(enemy);
-            EnemyCreated?.Invoke(enemy, EnemySettings);
+            var gameModel = base.CreateGameModel(position);
+            _enemyList.Add(gameModel);
+            return gameModel;
         }
     }
 }

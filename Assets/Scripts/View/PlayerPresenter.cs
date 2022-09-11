@@ -4,6 +4,6 @@ namespace View
 {
     public class PlayerPresenter : Presenter
     {
-        public IPlayer Player => _model as IPlayer;
+        public IPlayer Player => GameModel as IPlayer;
     }
 }

@@ -5,28 +5,27 @@ namespace View
 {
     public class CreateViewSystem
     {
+        protected readonly GameModelControlSystem ControlSystem;
         private readonly Game _game;
 
-        public CreateViewSystem(Game game)
+        public CreateViewSystem(Game game, GameModelControlSystem controlSystem)
         {
             _game = game;
+            ControlSystem = controlSystem;
 
-            OnModelCreated(game.Player, game.GameSettings.PlayerSettings);
-            game.AsteroidsControlSystem.EnemyCreated += OnModelCreated;
-            game.SaucersControlSystem.EnemyCreated += OnModelCreated;
+            controlSystem.GameModelCreated += OnModelCreated;
             game.GameStopped += OnGameStooped;
         }
         
-        private void OnModelCreated(GameModel model, GameModelSettings settings)
+        protected virtual void OnModelCreated(GameModel model)
         {
-            var presenter = Object.Instantiate(settings.Prefab, model.Position, model.Rotation).GetComponent<Presenter>();
+            var presenter = Object.Instantiate(ControlSystem.GameModelSettings.Prefab, model.Position, model.Rotation).GetComponent<Presenter>();
             presenter.Model = model;
         }
 
         private void OnGameStooped()
         {
-            _game.AsteroidsControlSystem.EnemyCreated -= OnModelCreated;
-            _game.SaucersControlSystem.EnemyCreated -= OnModelCreated;
+            ControlSystem.GameModelCreated -= OnModelCreated;
             _game.GameStopped -= OnGameStooped;
         }
     }

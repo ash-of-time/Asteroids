@@ -2,7 +2,7 @@
 
 namespace Model
 {
-    public class Field
+    public class Field : IField
     {
         private readonly Vector2 _size;
 
