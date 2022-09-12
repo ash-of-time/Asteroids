@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be9045078db495db3b0ffd20698dd1d, type: 3}
   m_Name: Saucer Settings
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 151664, guid: 11f26c2b36f183545acb462113899478, type: 3}
+  Prefab: {fileID: 151664, guid: 3c43af8e6d91bbc43aff0a310e3a9fa8, type: 3}
   MaxVelocity: 10
   InitialCount: 1
-  CreateCooldown: 10
+  MaxCount: 1
+  CreateCooldown: 5
   PlayerMinimumDistance: 15

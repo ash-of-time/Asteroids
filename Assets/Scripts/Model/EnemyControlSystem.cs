@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Model
@@ -7,8 +9,11 @@ namespace Model
     {
         protected readonly GameModel Player;
         private readonly List<GameModel> _enemyList;
-        
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
+        
+        private Vector3 NewEnemyPosition => Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
 
         protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field)
         {
@@ -16,13 +21,14 @@ namespace Model
             _enemyList = new List<GameModel>(enemySettings.MaxCount);
         }
 
-        public override void Initialize()
+        public override async void Initialize()
         {
             for (var i = 0; i < EnemySettings.InitialCount; i++)
             {
-                var position = Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
-                CreateGameModel(position);
+                CreateGameModel(NewEnemyPosition);
             }
+
+            await CreateEnemiesAsync();
         }
 
         public override void Execute()
@@ -30,6 +36,18 @@ namespace Model
             foreach (var enemy in _enemyList)
             {
                 enemy.Update();
+            }
+        }
+
+        protected override void OnGameStopped()
+        {
+            base.OnGameStopped();
+            
+            _cancellationTokenSource.Cancel();
+            
+            for (var i = _enemyList.Count - 1; i >= 0; i--)
+            {
+                _enemyList[i].Destroy();
             }
         }
 
@@ -41,11 +59,31 @@ namespace Model
             return gameModel;
         }
 
-        protected override void OnGameModelDestroyed(GameModel enemy)
+        protected override void OnGameModelDestroyed(GameModel gameModel)
         {
-            _enemyList.Remove(enemy);
+            _enemyList.Remove(gameModel);
             
-            base.OnGameModelDestroyed(enemy);
+            base.OnGameModelDestroyed(gameModel);
+        }
+        
+        private async Task CreateEnemiesAsync()
+        {
+            var token = _cancellationTokenSource.Token;
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(EnemySettings.CreateCooldown * 1000, token);
+                    if (_enemyList.Count < EnemySettings.MaxCount)
+                        CreateGameModel(NewEnemyPosition);
+                }
+            }
+            catch (TaskCanceledException e)
+            {
+                Debug.Log(e);
+            }
+
+            _cancellationTokenSource.Dispose();
         }
     }
 }

@@ -20,24 +20,25 @@ namespace View
 
         private void OnPlayerControlSystemCreated(GameModelControlSystem system)
         {
-            new CreateViewSystem(_game, system);
+            new ViewControlSystem(_game, system);
         }
         
         private void OnEnemyControlSystemCreated(GameModelControlSystem system)
         {
-            new CreateViewSystemWithPool(_game, system);
+            new ViewControlSystemWithPool(_game, system);
         }
 
         private void Update()
         {
-            _game.Execute();
+            if (!_game.Stopped)
+                _game.Execute();
         }
 
         private void OnDestroy()
         {
             _game.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
             _game.EnemyControlSystemCreated -= OnEnemyControlSystemCreated;
-            _game.Stop();
+            _game.Stop(true);
         }
     }
 }

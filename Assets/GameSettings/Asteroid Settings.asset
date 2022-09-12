@@ -15,5 +15,6 @@ MonoBehaviour:
   Prefab: {fileID: 151664, guid: fa49e460baf435b4780da7196c2ab473, type: 3}
   MaxVelocity: 5
   InitialCount: 5
+  MaxCount: 10
   CreateCooldown: 5
   PlayerMinimumDistance: 10

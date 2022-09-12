@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be9045078db495db3b0ffd20698dd1d, type: 3}
   m_Name: AsteroidPiecesSettings
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 151664, guid: 038dcc22ee4c5134097ccd004f53b660, type: 3}
+  Prefab: {fileID: 151664, guid: 0d82a142e0312db408339b68bec31ab8, type: 3}
   MaxVelocity: 10
   InitialCount: 4
   MaxCount: 5

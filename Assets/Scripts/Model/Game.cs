@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tools;
 
 namespace Model
 {
     public class Game : IInitializeSystem, IExecuteSystem
     {
-        // public PlayerControlSystem playerControlSystem { get; private set; }
-        // public AsteroidControlSystem AsteroidsControlSystem { get; private set; }
-        // public AsteroidPiecesControlSystem AsteroidPiecesControlSystem { get; private set; }
-        // public SaucerControlSystem SaucersControlSystem { get; private set; }
-        
         public readonly GameSettings GameSettings;
         private Field _field;
         private List<IExecuteSystem> _executeSystems = new(); 
+        
+        public static Game Instance { get; private set; }
+        
+        public bool Stopped { get; private set; }
+        public bool Destroyed { get; private set; }
 
         public event Action<GameModelControlSystem> PlayerControlSystemCreated;
         public event Action<GameModelControlSystem> EnemyControlSystemCreated;
@@ -22,6 +23,7 @@ namespace Model
 
         public Game(GameSettings gameSettings)
         {
+            Instance = this;
             GameSettings = gameSettings;
             _field = new Field(GameSettings.FieldSettings);
         }
@@ -40,9 +42,12 @@ namespace Model
             }
         }
 
-        public void Stop()
+        public void Stop(bool destroy)
         {
+            Stopped = true;
+            Destroyed = true;
             GameStopped?.Invoke();
+            Instance = null;
         }
         
         private PlayerControlSystem CreatePlayerControlSystem()
@@ -77,7 +82,8 @@ namespace Model
 
         private void OnPlayerDestroyed(GameModel player)
         {
-            Stop();
+            if (!Stopped)
+                Stop(false);
         }
     }
 }

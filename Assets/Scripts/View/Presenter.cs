@@ -6,21 +6,25 @@ namespace View
 {
     public class Presenter : MonoBehaviour
     {
-        protected GameModel GameModel;
+        private GameModel _gameModel;
 
         public event Action<Presenter> ModelDestroyed;
 
-        public GameModel Model
+        public GameModel GameModel
         {
-            get => GameModel;
+            get => _gameModel;
             set
             {
-                GameModel = value;
-                PositionChanged(GameModel.Position);
-                RotationChanged(GameModel.Rotation);
-                GameModel.ReactivePosition.Changed += PositionChanged;
-                GameModel.ReactiveRotation.Changed += RotationChanged;
-                GameModel.Destroyed += OnGameModelDestroyed;
+                _gameModel = value;
+                
+                if (_gameModel == null)
+                    return;
+                
+                PositionChanged(_gameModel.Position);
+                RotationChanged(_gameModel.Rotation);
+                _gameModel.ReactivePosition.Changed += PositionChanged;
+                _gameModel.ReactiveRotation.Changed += RotationChanged;
+                _gameModel.Destroyed += OnGameModelDestroyed;
             }
         }
 
@@ -29,7 +33,15 @@ namespace View
             if (!other.TryGetComponent<Presenter>(out var otherPresenter))
                 return;
             
-            Model.Collide(otherPresenter.Model);
+            if(_gameModel == null || otherPresenter._gameModel == null)
+                return;
+            
+            _gameModel.Collide(otherPresenter.GameModel);
+        }
+
+        private void OnDestroy()
+        {
+            OnGameModelDestroyed(null);
         }
 
         private void PositionChanged(Vector3 position)
@@ -42,15 +54,19 @@ namespace View
             transform.rotation = rotation;
         }
         
-        private void OnGameModelDestroyed(GameModel model)
+        private void OnGameModelDestroyed(GameModel _)
         {
-            GameModel.ReactivePosition.Changed -= PositionChanged;
-            GameModel.ReactiveRotation.Changed -= RotationChanged;
-            GameModel.Destroyed -= OnGameModelDestroyed;
-
-            GameModel = null;
+            if (_gameModel == null)
+                return;
             
-            ModelDestroyed?.Invoke(this);
+            _gameModel.ReactivePosition.Changed -= PositionChanged;
+            _gameModel.ReactiveRotation.Changed -= RotationChanged;
+            _gameModel.Destroyed -= OnGameModelDestroyed;
+
+            _gameModel = null;
+            
+            if (Game.Instance != null && !Game.Instance.Destroyed)
+                ModelDestroyed?.Invoke(this);
         }
     }
 }

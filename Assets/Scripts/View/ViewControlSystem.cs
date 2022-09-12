@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace View
 {
-    public class CreateViewSystem
+    public class ViewControlSystem
     {
         protected readonly GameModelControlSystem ControlSystem;
         private readonly Game _game;
 
-        public CreateViewSystem(Game game, GameModelControlSystem controlSystem)
+        public ViewControlSystem(Game game, GameModelControlSystem controlSystem)
         {
             _game = game;
             ControlSystem = controlSystem;
@@ -17,15 +17,16 @@ namespace View
             game.GameStopped += OnGameStooped;
         }
         
-        protected virtual void OnModelCreated(GameModel model)
+        protected virtual void OnModelCreated(GameModel gameModel)
         {
-            var presenter = Object.Instantiate(ControlSystem.GameModelSettings.Prefab, model.Position, model.Rotation).GetComponent<Presenter>();
-            presenter.Model = model;
+            var presenter = Object.Instantiate(ControlSystem.GameModelSettings.Prefab, gameModel.Position, gameModel.Rotation).GetComponent<Presenter>();
+            presenter.GameModel = gameModel;
             presenter.ModelDestroyed += OnModelDestroyed;
         }
         
         protected virtual void OnModelDestroyed(Presenter presenter)
         {
+            presenter.ModelDestroyed -= OnModelDestroyed;
             Object.Destroy(presenter.gameObject);
         }
 

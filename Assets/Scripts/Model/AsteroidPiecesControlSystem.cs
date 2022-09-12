@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Model
 {
@@ -16,8 +17,18 @@ namespace Model
             AsteroidControlSystem.GameModelDestroyed += OnAsteroidDestroyed;
         }
 
+        protected override void OnGameStopped()
+        {
+            base.OnGameStopped();
+            
+            AsteroidControlSystem.GameModelDestroyed -= OnAsteroidDestroyed;
+        }
+
         private void OnAsteroidDestroyed(GameModel asteroid)
         {
+            if (Game.Instance.Stopped)
+                return;
+            
             var count = Random.Range(EnemySettings.InitialCount, EnemySettings.MaxCount + 1);
             for (var i = 0; i < count; i++)
             {

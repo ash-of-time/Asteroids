@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Tools;
 using UnityEngine;
 
@@ -16,12 +17,19 @@ namespace Model
         {
             GameModelSettings = gameModelSettings;
             Field = field;
+
+            Game.Instance.GameStopped += OnGameStopped;
         }
 
         public abstract void Initialize();
 
         public abstract void Execute();
-        
+
+        protected virtual void OnGameStopped()
+        {
+            Game.Instance.GameStopped -= OnGameStopped;
+        }
+
         protected abstract GameModel CreateGameModelObject(Vector3 position);
 
         protected virtual GameModel CreateGameModel(Vector3 position)
@@ -33,10 +41,10 @@ namespace Model
             return gameModel;
         }
         
-        protected virtual void OnGameModelDestroyed(GameModel enemy)
+        protected virtual void OnGameModelDestroyed(GameModel gameModel)
         {
-            enemy.Destroyed -= OnGameModelDestroyed;
-            GameModelDestroyed?.Invoke(enemy);
+            gameModel.Destroyed -= OnGameModelDestroyed;
+            GameModelDestroyed?.Invoke(gameModel);
         }
     }
 }

@@ -45,15 +45,15 @@ namespace Model
         {
             Destroy();
         }
+        
+        public void Destroy()
+        {
+            Destroyed?.Invoke(this);
+        }
 
         protected virtual void Move()
         {
             Position = _field.GetPointFromOtherSideIfOutOfField(Position);
-        }
-
-        private void Destroy()
-        {
-            Destroyed?.Invoke(this);
         }
     }
 }

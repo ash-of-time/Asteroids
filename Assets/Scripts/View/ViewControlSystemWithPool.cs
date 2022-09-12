@@ -4,19 +4,19 @@ using UnityEngine.Pool;
 
 namespace View
 {
-    public class CreateViewSystemWithPool : CreateViewSystem
+    public class ViewControlSystemWithPool : ViewControlSystem
     {
         private readonly ObjectPool<GameObject> _pool;
 
-        public CreateViewSystemWithPool(Game game, GameModelControlSystem controlSystem) : base(game, controlSystem)
+        public ViewControlSystemWithPool(Game game, GameModelControlSystem controlSystem) : base(game, controlSystem)
         {
             _pool = new ObjectPool<GameObject>(InstantiateView, GetView, ReleaseView, DestroyView);
         }
 
-        protected override void OnModelCreated(GameModel model)
+        protected override void OnModelCreated(GameModel gameModel)
         {
             var presenter = _pool.Get().GetComponent<Presenter>();
-            presenter.Model = model;
+            presenter.GameModel = gameModel;
             presenter.ModelDestroyed += OnModelDestroyed;
         }
         
