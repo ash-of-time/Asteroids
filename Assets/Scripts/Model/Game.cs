@@ -7,7 +7,6 @@ namespace Model
     public class Game : IExecuteSystem
     {
         private readonly GameSettings _gameSettings;
-        private readonly Field _field;
         private readonly List<GameModelControlSystem> _gameModelControlSystems = new(5);
 
         public static Game Instance { get; private set; }
@@ -25,7 +24,7 @@ namespace Model
         private Game(GameSettings gameSettings)
         {
             _gameSettings = gameSettings;
-            _field = new Field(_gameSettings.FieldSettings);
+            Field.CreateInstance(_gameSettings.FieldSettings);
         }
 
         public static void Initialize(GameSettings gameSettings)
@@ -62,7 +61,7 @@ namespace Model
 
         private PlayerControlSystem CreatePlayerControlSystem()
         {
-            var playerControlSystem = new PlayerControlSystem(_gameSettings.PlayerSettings, _field);
+            var playerControlSystem = new PlayerControlSystem(_gameSettings.PlayerSettings);
             playerControlSystem.GameModelDestroyed += OnPlayerDestroyed;
             _gameModelControlSystems.Add(playerControlSystem);
 
@@ -74,14 +73,14 @@ namespace Model
 
         private void CreateShootingControlSystem(PlayerControlSystem playerControlSystem)
         {
-            CreateMultipleGameModelsControlSystem<ProjectileControlSystem>(_gameSettings.ProjectileSettings, _field, playerControlSystem);
+            CreateMultipleGameModelsControlSystem<ProjectileControlSystem>(_gameSettings.ProjectileSettings, playerControlSystem);
         }
 
         private void CreateEnemyControlSystems(PlayerControlSystem playerControlSystem)
         {
-            var asteroidsControlSystem = CreateMultipleGameModelsControlSystem<AsteroidControlSystem>(_gameSettings.AsteroidSettings, _field, playerControlSystem);
-            CreateMultipleGameModelsControlSystem<AsteroidPiecesControlSystem>(_gameSettings.AsteroidPieceSettings, _field, asteroidsControlSystem);
-            CreateMultipleGameModelsControlSystem<SaucerControlSystem>(_gameSettings.SaucerSettings, _field, playerControlSystem);
+            var asteroidsControlSystem = CreateMultipleGameModelsControlSystem<AsteroidControlSystem>(_gameSettings.AsteroidSettings, playerControlSystem);
+            CreateMultipleGameModelsControlSystem<AsteroidPiecesControlSystem>(_gameSettings.AsteroidPieceSettings, asteroidsControlSystem);
+            CreateMultipleGameModelsControlSystem<SaucerControlSystem>(_gameSettings.SaucerSettings, playerControlSystem);
         }
 
         private void CreatePointsCountSystem()
@@ -96,10 +95,9 @@ namespace Model
             PointsCountSystemCreated?.Invoke(pointsCountSystem);
         }
         
-        private T CreateMultipleGameModelsControlSystem<T>(GameModelSettings gameModelSettings, IField field,
-            GameModelControlSystem relatedControlSystem) where T : MultipleGameModelsControlSystem
+        private T CreateMultipleGameModelsControlSystem<T>(GameModelSettings gameModelSettings, GameModelControlSystem relatedControlSystem) where T : MultipleGameModelsControlSystem
         {
-            var controlSystem = (T)Activator.CreateInstance(typeof(T), gameModelSettings, field, relatedControlSystem);
+            var controlSystem = (T)Activator.CreateInstance(typeof(T), gameModelSettings, relatedControlSystem);
             _gameModelControlSystems.Add(controlSystem);
             MultipleGameModelsControlSystemCreated?.Invoke(controlSystem);
             controlSystem.Initialize();
@@ -107,7 +105,7 @@ namespace Model
             return controlSystem;
         }
 
-        private void OnPlayerDestroyed(GameModel player)
+        private void OnPlayerDestroyed(GameModel player, bool totally)
         {
             if (!IsStopped)
                 Stop(false);

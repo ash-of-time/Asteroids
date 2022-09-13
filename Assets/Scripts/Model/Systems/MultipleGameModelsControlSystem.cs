@@ -10,8 +10,8 @@ namespace Model
 
         protected readonly Player Player;
 
-        protected MultipleGameModelsControlSystem(GameModelSettings gameModelSettings, IField field, GameModelControlSystem relatedControlSystem) :
-            base(gameModelSettings, field)
+        protected MultipleGameModelsControlSystem(GameModelSettings gameModelSettings, GameModelControlSystem relatedControlSystem) :
+            base(gameModelSettings)
         {
             RelatedControlSystem = relatedControlSystem;
             if (RelatedControlSystem is PlayerControlSystem playerControlSystem)
@@ -32,7 +32,7 @@ namespace Model
 
             for (var i = GameModelsList.Count - 1; i >= 0; i--)
             {
-                GameModelsList[i].Destroy();
+                GameModelsList[i].Destroy(true);
             }
         }
 
@@ -44,11 +44,11 @@ namespace Model
             return gameModel;
         }
 
-        protected override void OnGameModelDestroyed(GameModel gameModel)
+        protected override void OnGameModelDestroyed(GameModel gameModel, bool totally)
         {
             GameModelsList.Remove(gameModel);
 
-            base.OnGameModelDestroyed(gameModel);
+            base.OnGameModelDestroyed(gameModel, totally);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Model
             enemyControlSystem.GameModelDestroyed += OnGameModelDestroyed;
         }
 
-        private void OnGameModelDestroyed(GameModel gameModel)
+        private void OnGameModelDestroyed(GameModel gameModel, bool totally)
         {
             if (gameModel is Enemy enemy)
                 Points += enemy.Points;

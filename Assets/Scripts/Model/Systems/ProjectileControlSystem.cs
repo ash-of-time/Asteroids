@@ -5,7 +5,7 @@ namespace Model
 {
     public class ProjectileControlSystem : MultipleGameModelsControlSystem
     {
-        public ProjectileControlSystem(GameModelSettings gameModelSettings, IField field, PlayerControlSystem playerControlSystem) : base(gameModelSettings, field, playerControlSystem)
+        public ProjectileControlSystem(GameModelSettings gameModelSettings, PlayerControlSystem playerControlSystem) : base(gameModelSettings, playerControlSystem)
         {
             GameModelsList = new List<GameModel>();
         }
@@ -24,7 +24,7 @@ namespace Model
 
         protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            return new Projectile(position, rotation, GameModelSettings, Field);
+            return new Projectile(position, rotation, GameModelSettings, Field.Instance);
         }
 
         private void OnPlayerFired()

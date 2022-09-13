@@ -61,7 +61,7 @@ namespace View
             
             var value = context.ReadValueAsButton();
             if (context.performed && value)
-                _presenter.Player.AlternativeFire();
+                _presenter.AlternativeFire();
         }
     }
 }

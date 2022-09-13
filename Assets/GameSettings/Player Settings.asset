@@ -19,5 +19,6 @@ MonoBehaviour:
   RotationSpeed: 90
   InitialPosition: {x: 0, y: 0, z: 0}
   BarrelPosition: {x: 0, y: 0, z: 1.05}
-  FireRate: 1
-  AlternativeFireCooldown: 10
+  LaserCharges: 3
+  LaserReloadTime: 10
+  IsInvulnerable: 0

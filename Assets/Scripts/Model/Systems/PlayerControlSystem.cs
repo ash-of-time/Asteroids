@@ -8,7 +8,7 @@ namespace Model
         
         private PlayerSettings PlayerSettings => GameModelSettings as PlayerSettings;
         
-        public PlayerControlSystem(GameModelSettings gameModelSettings, IField field) : base(gameModelSettings, field)
+        public PlayerControlSystem(GameModelSettings gameModelSettings) : base(gameModelSettings)
         {
         }
 
@@ -26,20 +26,20 @@ namespace Model
         {
             base.OnGameStopped();
             
-            Player?.Destroy();
+            Player?.Destroy(true);
         }
 
         protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            Player = new Player(position, rotation, PlayerSettings, Field);
+            Player = new Player(position, rotation, PlayerSettings, Field.Instance);
             return Player;
         }
         
-        protected override void OnGameModelDestroyed(GameModel gameModel)
+        protected override void OnGameModelDestroyed(GameModel gameModel, bool totally)
         {
             Player = null;
             
-            base.OnGameModelDestroyed(gameModel);
+            base.OnGameModelDestroyed(gameModel, totally);
         }
     }
 }

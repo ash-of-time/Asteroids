@@ -38,7 +38,7 @@ namespace View
 
         private void OnDestroy()
         {
-            OnGameModelDestroyed(null);
+            OnGameModelDestroyed(null, true);
         }
 
         private void PositionChanged(Vector3 position)
@@ -51,7 +51,7 @@ namespace View
             transform.rotation = rotation;
         }
         
-        private void OnGameModelDestroyed(GameModel _)
+        private void OnGameModelDestroyed(GameModel model, bool totally)
         {
             if (_gameModel == null)
                 return;

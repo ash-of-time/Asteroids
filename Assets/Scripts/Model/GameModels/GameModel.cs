@@ -27,7 +27,7 @@ namespace Model
 
         public Vector3 ForwardDirection => Rotation * Vector3.forward;
 
-        public event Action<GameModel> Destroyed;
+        public event Action<GameModel, bool> Destroyed;
 
         protected GameModel(Vector3 position, Quaternion rotation, GameModelSettings settings, IField field)
         {
@@ -44,12 +44,12 @@ namespace Model
 
         public virtual void Collide(GameModel gameModel)
         {
-            Destroy();
+            Destroy(false);
         }
         
-        public void Destroy()
+        public void Destroy(bool totally)
         {
-            Destroyed?.Invoke(this);
+            Destroyed?.Invoke(this, totally);
         }
 
         protected virtual void Move()

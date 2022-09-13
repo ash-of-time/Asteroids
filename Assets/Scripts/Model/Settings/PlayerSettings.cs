@@ -10,7 +10,8 @@ namespace Model
         public float RotationSpeed;
         public Vector3 InitialPosition;
         public Vector3 BarrelPosition;
-        public int FireRate;
-        public int AlternativeFireCooldown;
+        public int LaserCharges;
+        public int LaserReloadTime;
+        public bool IsInvulnerable;
     }
 }

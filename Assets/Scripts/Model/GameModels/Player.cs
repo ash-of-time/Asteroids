@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tools;
 using UnityEngine;
 
@@ -20,6 +21,22 @@ namespace Model
             get => ReactiveVelocity.Get();
             private set => ReactiveVelocity.Set(value);
         }
+        
+        public ReactiveProperty<int> ReactiveLaserCharges { get; } = new();
+
+        public int LaserCharges
+        {
+            get => ReactiveLaserCharges.Get();
+            private set => ReactiveLaserCharges.Set(value);
+        }
+        
+        public ReactiveProperty<float> ReactiveLaserReloadTime { get; } = new();
+
+        public float LaserReloadTime
+        {
+            get => ReactiveLaserReloadTime.Get();
+            private set => ReactiveLaserReloadTime.Set(value);
+        }
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
 
@@ -27,6 +44,8 @@ namespace Model
 
         public Player(Vector3 position, Quaternion rotation, PlayerSettings playerSettings, IField field) : base(position, rotation, playerSettings, field)
         {
+            LaserCharges = PlayerSettings.LaserCharges;
+            LaserReloadTime = playerSettings.LaserReloadTime;
         }
         
         public void Fire()
@@ -34,12 +53,24 @@ namespace Model
             Fired?.Invoke();
         }
 
-        public void AlternativeFire()
+        public bool TryAlternativeFire(List<GameModel> hitModelsList)
         {
+            if (LaserCharges == 0)
+                return false;
+
+            LaserCharges--;
+            LaserReloadTime = PlayerSettings.LaserReloadTime;
+            foreach (var gameModel in hitModelsList)
+            {
+                gameModel.Destroy(true);
+            }
+
+            return true;
         }
 
         public override void Update()
         {
+            ReloadLaser();
             Rotate();
             base.Update();
         }
@@ -70,11 +101,24 @@ namespace Model
         {
             Rotation *= Quaternion.Euler(Vector3.up * (GivenRotation * PlayerSettings.RotationSpeed * Time.deltaTime));
         }
+
+        private void ReloadLaser()
+        {
+            if (LaserCharges < PlayerSettings.LaserCharges)
+            {
+                LaserReloadTime = Mathf.Clamp(LaserReloadTime - Time.deltaTime, 0, PlayerSettings.LaserReloadTime);
+                if (LaserReloadTime == 0)
+                {
+                    LaserCharges++;
+                    LaserReloadTime = PlayerSettings.LaserReloadTime;
+                }
+            }
+        }
         
-        // todo remove Temp
-        // public override void Collide(GameModel gameModel)
-        // {
-            // do nothing
-        // }
+        public override void Collide(GameModel gameModel)
+        {
+            if (!PlayerSettings.IsInvulnerable)
+                base.Collide(gameModel);
+        }
     }
 }

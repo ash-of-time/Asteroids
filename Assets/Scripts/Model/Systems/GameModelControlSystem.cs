@@ -7,15 +7,13 @@ namespace Model
     public abstract class GameModelControlSystem : IInitializeSystem, IExecuteSystem
     {
         public readonly GameModelSettings GameModelSettings;
-        protected readonly IField Field;
         
         public event Action<GameModel> GameModelCreated;
-        public event Action<GameModel> GameModelDestroyed;
+        public event Action<GameModel, bool> GameModelDestroyed;
 
-        protected GameModelControlSystem(GameModelSettings gameModelSettings, IField field)
+        protected GameModelControlSystem(GameModelSettings gameModelSettings)
         {
             GameModelSettings = gameModelSettings;
-            Field = field;
 
             Game.Instance.GameStopped += OnGameStopped;
         }
@@ -40,10 +38,10 @@ namespace Model
             return gameModel;
         }
         
-        protected virtual void OnGameModelDestroyed(GameModel gameModel)
+        protected virtual void OnGameModelDestroyed(GameModel gameModel, bool totally)
         {
             gameModel.Destroyed -= OnGameModelDestroyed;
-            GameModelDestroyed?.Invoke(gameModel);
+            GameModelDestroyed?.Invoke(gameModel, totally);
         }
     }
 }

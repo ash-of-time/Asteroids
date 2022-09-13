@@ -11,9 +11,9 @@ namespace Model
 
         protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
         
-        private Vector3 NewEnemyPosition => Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
+        private Vector3 NewEnemyPosition => Field.Instance.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
 
-        protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModelControlSystem relatedControlSystem) : base(enemySettings, field, relatedControlSystem)
+        protected EnemyControlSystem(EnemySettings enemySettings, GameModelControlSystem relatedControlSystem) : base(enemySettings, relatedControlSystem)
         {
             GameModelsList = new List<GameModel>(enemySettings.MaxCount);
         }

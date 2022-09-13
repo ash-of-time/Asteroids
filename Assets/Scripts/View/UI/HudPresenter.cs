@@ -50,6 +50,8 @@ namespace View
             _player.ReactivePosition.Changed -= OnPlayerPositionChanged;
             _player.ReactiveRotation.Changed -= OnPlayerRotationChanged;
             _player.ReactiveVelocity.Changed -= OnPlayerVelocityChanged;
+            _player.ReactiveLaserCharges.Changed -= OnPlayerLaserChargesChanged;
+            _player.ReactiveLaserReloadTime.Changed -= OnPlayerLaserCooldownChanged;
         }
 
         private void OnPlayerCreated(GameModel gameModel)
@@ -62,9 +64,13 @@ namespace View
             OnPlayerPositionChanged(_player.Position);
             OnPlayerRotationChanged(_player.Rotation);
             OnPlayerVelocityChanged(_player.Velocity);
+            OnPlayerLaserChargesChanged(_player.LaserCharges);
+            OnPlayerLaserCooldownChanged(_player.LaserReloadTime);
             _player.ReactivePosition.Changed += OnPlayerPositionChanged;
             _player.ReactiveRotation.Changed += OnPlayerRotationChanged;
             _player.ReactiveVelocity.Changed += OnPlayerVelocityChanged;
+            _player.ReactiveLaserCharges.Changed += OnPlayerLaserChargesChanged;
+            _player.ReactiveLaserReloadTime.Changed += OnPlayerLaserCooldownChanged;
         }
 
         private void OnPlayerPositionChanged(Vector3 playerPosition)
@@ -76,14 +82,25 @@ namespace View
         
         private void OnPlayerRotationChanged(Quaternion playerRotation)
         {
-            var rotation = Math.Round(playerRotation.eulerAngles.y);
-            _view.RotationLabel.text = $"Rotation: {rotation}";
+            var roundedRotation = Math.Round(playerRotation.eulerAngles.y);
+            _view.RotationLabel.text = $"Rotation: {roundedRotation}";
         }
         
         private void OnPlayerVelocityChanged(float playerVelocity)
         {
-            var velocity = Math.Round(playerVelocity);
-            _view.VelocityLabel.text = $"Velocity: {velocity}";
+            var roundedVelocity = Math.Round(playerVelocity);
+            _view.VelocityLabel.text = $"Velocity: {roundedVelocity}";
+        }
+        
+        private void OnPlayerLaserChargesChanged(int charges)
+        {
+            _view.LaserChargesLabel.text = $"Laser charges: {charges}";
+        }
+        
+        private void OnPlayerLaserCooldownChanged(float cooldown)
+        {
+            var roundedCooldown = Math.Round(cooldown);
+            _view.LaserCooldownLabel.text = $"Laser cooldown: {roundedCooldown}";
         }
         
         private void OnPointsChanged(int points)
