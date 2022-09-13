@@ -12,7 +12,7 @@ namespace Model
         {
             Position += ForwardDirection * (Settings.MaxVelocity * Time.deltaTime);
 
-            if (_field.IsPointOutOfField(Position))
+            if (Field.IsPointOutOfField(Position))
                 Destroy();
         }
     }

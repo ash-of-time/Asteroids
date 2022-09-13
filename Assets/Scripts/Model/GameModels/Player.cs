@@ -13,7 +13,7 @@ namespace Model
         public float GivenAcceleration { get; set; }
         public Vector3 BarrelPosition => Position + Rotation * PlayerSettings.BarrelPosition;
 
-        public ReactiveProperty<float> ReactiveVelocity = new();
+        public ReactiveProperty<float> ReactiveVelocity { get; } = new();
 
         public float Velocity
         {

@@ -4,7 +4,7 @@ namespace Model
 {
     public class SaucerControlSystem : EnemyControlSystem
     {
-        public SaucerControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field, player)
+        public SaucerControlSystem(EnemySettings enemySettings, IField field, PlayerControlSystem playerControlSystem) : base(enemySettings, field, playerControlSystem)
         {
         }
 

@@ -5,12 +5,9 @@ namespace Model
 {
     public class ProjectileControlSystem : MultipleGameModelsControlSystem
     {
-        protected readonly Player Player;
-        
-        public ProjectileControlSystem(GameModelSettings gameModelSettings, IField field, Player player) : base(gameModelSettings, field)
+        public ProjectileControlSystem(GameModelSettings gameModelSettings, IField field, PlayerControlSystem playerControlSystem) : base(gameModelSettings, field, playerControlSystem)
         {
-            Player = player;
-            _gameModelsList = new List<GameModel>();
+            GameModelsList = new List<GameModel>();
         }
 
         public override void Initialize()

@@ -1,12 +1,13 @@
-﻿using Tools;
+﻿using System.Collections.Generic;
+using Tools;
 
 namespace Model
 {
     public class PointsCountSystem
     {
-        private readonly EnemyControlSystem[] _enemyControlSystems;
+        private readonly List<EnemyControlSystem> _enemyControlSystems = new(3);
 
-        public ReactiveProperty<int> ReactivePoints = new();
+        public ReactiveProperty<int> ReactivePoints { get; } = new();
 
         public int Points
         {
@@ -14,15 +15,20 @@ namespace Model
             private set => ReactivePoints.Set(value);
         }
 
-        public PointsCountSystem(params EnemyControlSystem[] enemyControlSystems)
+        public PointsCountSystem()
         {
-            _enemyControlSystems = enemyControlSystems;
             foreach (var system in _enemyControlSystems)
             {
                 system.GameModelDestroyed += OnGameModelDestroyed;
             }
             
             Game.Instance.GameStopped += OnGameStopped;
+        }
+
+        public void Add(EnemyControlSystem enemyControlSystem)
+        {
+            _enemyControlSystems.Add(enemyControlSystem);
+            enemyControlSystem.GameModelDestroyed += OnGameModelDestroyed;
         }
 
         private void OnGameModelDestroyed(GameModel gameModel)

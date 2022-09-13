@@ -7,17 +7,15 @@ namespace Model
 {
     public abstract class EnemyControlSystem : MultipleGameModelsControlSystem
     {
-        protected readonly GameModel Player;
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
         
         private Vector3 NewEnemyPosition => Field.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
 
-        protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field)
+        protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModelControlSystem relatedControlSystem) : base(enemySettings, field, relatedControlSystem)
         {
-            Player = player;
-            _gameModelsList = new List<GameModel>(enemySettings.MaxCount);
+            GameModelsList = new List<GameModel>(enemySettings.MaxCount);
         }
 
         public override async void Initialize()
@@ -45,7 +43,7 @@ namespace Model
                 while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(EnemySettings.CreateCooldown * 1000, token);
-                    if (_gameModelsList.Count < EnemySettings.MaxCount)
+                    if (GameModelsList.Count < EnemySettings.MaxCount)
                         CreateGameModel(NewEnemyPosition, Quaternion.identity);
                 }
             }

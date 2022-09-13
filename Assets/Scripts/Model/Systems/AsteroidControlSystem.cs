@@ -4,7 +4,7 @@ namespace Model
 {
     public class AsteroidControlSystem : EnemyControlSystem
     {
-        public AsteroidControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field, player)
+        public AsteroidControlSystem(EnemySettings enemySettings, IField field, GameModelControlSystem relatedControlSystem) : base(enemySettings, field, relatedControlSystem)
         {
         }
 

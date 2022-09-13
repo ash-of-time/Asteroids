@@ -5,42 +5,49 @@ namespace Model
 {
     public abstract class MultipleGameModelsControlSystem : GameModelControlSystem
     {
-        protected List<GameModel> _gameModelsList;
+        protected readonly GameModelControlSystem RelatedControlSystem;
+        protected List<GameModel> GameModelsList;
 
-        protected MultipleGameModelsControlSystem(GameModelSettings gameModelSettings, IField field) : base(gameModelSettings, field)
+        protected readonly Player Player;
+
+        protected MultipleGameModelsControlSystem(GameModelSettings gameModelSettings, IField field, GameModelControlSystem relatedControlSystem) :
+            base(gameModelSettings, field)
         {
+            RelatedControlSystem = relatedControlSystem;
+            if (RelatedControlSystem is PlayerControlSystem playerControlSystem)
+                Player = playerControlSystem.Player;
         }
-        
+
         public override void Execute()
         {
-            for (var i = _gameModelsList.Count - 1; i >= 0; i--)
+            for (var i = GameModelsList.Count - 1; i >= 0; i--)
             {
-                _gameModelsList[i].Update();
+                GameModelsList[i].Update();
             }
         }
-        
+
         protected override void OnGameStopped()
         {
             base.OnGameStopped();
-            
-            for (var i = _gameModelsList.Count - 1; i >= 0; i--)
+
+            for (var i = GameModelsList.Count - 1; i >= 0; i--)
             {
-                _gameModelsList[i].Destroy();
+                GameModelsList[i].Destroy();
             }
         }
-        
+
         protected override GameModel CreateGameModel(Vector3 position, Quaternion rotation)
         {
             var gameModel = base.CreateGameModel(position, rotation);
-            _gameModelsList.Add(gameModel);
-            
+            GameModelsList.Add(gameModel);
+
             return gameModel;
         }
-        
+
         protected override void OnGameModelDestroyed(GameModel gameModel)
         {
-            _gameModelsList.Remove(gameModel);
-            
+            GameModelsList.Remove(gameModel);
+
             base.OnGameModelDestroyed(gameModel);
         }
     }

@@ -7,7 +7,7 @@ namespace Model
     public abstract class GameModel : IUpdatable
     {
         protected readonly GameModelSettings Settings;
-        protected readonly IField _field;
+        protected readonly IField Field;
 
         public ReactiveProperty<Vector3> ReactivePosition { get; } = new();
 
@@ -34,7 +34,7 @@ namespace Model
             Position = position;
             Rotation = rotation;
             Settings = settings;
-            _field = field;
+            Field = field;
         }
 
         public virtual void Update()
@@ -54,8 +54,8 @@ namespace Model
 
         protected virtual void Move()
         {
-            if (_field.IsPointOutOfField(Position))
-                Position = _field.GetPointFromOtherSideIfOutOfField(Position);
+            if (Field.IsPointOutOfField(Position))
+                Position = Field.GetPointFromOtherSideIfOutOfField(Position);
         }
     }
 }

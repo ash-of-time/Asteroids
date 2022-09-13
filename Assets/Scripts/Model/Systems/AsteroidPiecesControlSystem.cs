@@ -1,15 +1,13 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Model
 {
     public class AsteroidPiecesControlSystem : AsteroidControlSystem
     {
-        public EnemyControlSystem AsteroidControlSystem { get; set; }
+        private EnemyControlSystem AsteroidControlSystem => RelatedControlSystem as EnemyControlSystem;
 
-        public AsteroidPiecesControlSystem(EnemyControlSystem asteroidControlSystem, EnemySettings asteroidPiecesSettings, IField field) : base(asteroidPiecesSettings, field, null)
+        public AsteroidPiecesControlSystem(EnemySettings asteroidPiecesSettings, IField field, GameModelControlSystem asteroidControlSystem) : base(asteroidPiecesSettings, field, asteroidControlSystem)
         {
-            AsteroidControlSystem = asteroidControlSystem;
         }
 
         public override void Initialize()
