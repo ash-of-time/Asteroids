@@ -4,9 +4,8 @@ namespace Model
 {
     public class Asteroid : Enemy
     {
-        public Asteroid(Vector3 position, EnemySettings asteroidSettings, IField field) : base(position, asteroidSettings, field)
+        public Asteroid(Vector3 position, Quaternion rotation, EnemySettings asteroidSettings, IField field) : base(position, rotation, asteroidSettings, field)
         {
-            Rotation = Quaternion.Euler(0, Random.Range(-180f, 180f), 0);
         }
 
         protected override void Move()

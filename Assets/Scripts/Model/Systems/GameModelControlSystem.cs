@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Tools;
 using UnityEngine;
 
@@ -30,11 +29,11 @@ namespace Model
             Game.Instance.GameStopped -= OnGameStopped;
         }
 
-        protected abstract GameModel CreateGameModelObject(Vector3 position);
+        protected abstract GameModel CreateGameModelObject(Vector3 position, Quaternion rotation);
 
-        protected virtual GameModel CreateGameModel(Vector3 position)
+        protected virtual GameModel CreateGameModel(Vector3 position, Quaternion rotation)
         {
-            var gameModel = CreateGameModelObject(position);
+            var gameModel = CreateGameModelObject(position, rotation);
             gameModel.Destroyed += OnGameModelDestroyed;
             GameModelCreated?.Invoke(gameModel);
 

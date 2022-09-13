@@ -17,7 +17,7 @@ namespace Model
         public bool Destroyed { get; private set; }
 
         public event Action<GameModelControlSystem> PlayerControlSystemCreated;
-        public event Action<GameModelControlSystem> EnemyControlSystemCreated;
+        public event Action<MultipleGameModelsControlSystem> MultipleGameModelsControlSystemCreated;
         public event Action GameStopped;
         
 
@@ -31,6 +31,7 @@ namespace Model
         public void Initialize()
         {
             var playerControlSystem = CreatePlayerControlSystem();
+            CreateShootingControlSystem(playerControlSystem);
             CreateEnemyControlSystems(playerControlSystem);
         }
 
@@ -45,7 +46,7 @@ namespace Model
         public void Stop(bool destroy)
         {
             Stopped = true;
-            Destroyed = true;
+            Destroyed = destroy;
             GameStopped?.Invoke();
             Instance = null;
         }
@@ -62,21 +63,29 @@ namespace Model
             return playerControlSystem;
         }
 
+        private void CreateShootingControlSystem(PlayerControlSystem playerControlSystem)
+        {
+            var shootingControlSystem = new ProjectileControlSystem(GameSettings.ProjectileSettings, _field, playerControlSystem.Player);
+            _executeSystems.Add(shootingControlSystem);
+            MultipleGameModelsControlSystemCreated?.Invoke(shootingControlSystem);
+            shootingControlSystem.Initialize();
+        }
+
         private void CreateEnemyControlSystems(PlayerControlSystem playerControlSystem)
         {
             var asteroidsControlSystem = new AsteroidControlSystem(GameSettings.AsteroidSettings, _field, playerControlSystem.Player);
             _executeSystems.Add(asteroidsControlSystem);
-            EnemyControlSystemCreated?.Invoke(asteroidsControlSystem);
+            MultipleGameModelsControlSystemCreated?.Invoke(asteroidsControlSystem);
             asteroidsControlSystem.Initialize();
             
             var asteroidPiecesControlSystem = new AsteroidPiecesControlSystem(asteroidsControlSystem, GameSettings.AsteroidPieceSettings, _field); // todo change AsteroidPiecesControlSystem to unify
             _executeSystems.Add(asteroidPiecesControlSystem);
-            EnemyControlSystemCreated?.Invoke(asteroidPiecesControlSystem);
+            MultipleGameModelsControlSystemCreated?.Invoke(asteroidPiecesControlSystem);
             asteroidPiecesControlSystem.Initialize();
 
             var saucersControlSystem = new SaucerControlSystem(GameSettings.SaucerSettings, _field, playerControlSystem.Player);
             _executeSystems.Add(saucersControlSystem);
-            EnemyControlSystemCreated?.Invoke(saucersControlSystem);
+            MultipleGameModelsControlSystemCreated?.Invoke(saucersControlSystem);
             saucersControlSystem.Initialize();
         }
 

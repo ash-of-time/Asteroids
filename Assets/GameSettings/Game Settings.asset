@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldSettings: {fileID: 11400000, guid: 66c7c0284faafcd44bac961f62225ca9, type: 2}
   PlayerSettings: {fileID: 11400000, guid: 5b3232c500c74824b8baf7a59672c0ba, type: 2}
+  ProjectileSettings: {fileID: 11400000, guid: ea1a81601a84e7d448e9ea5b5835f31a, type: 2}
   AsteroidSettings: {fileID: 11400000, guid: 7b173dad6c9397d48830797a1c0a1991, type: 2}
   AsteroidPieceSettings: {fileID: 11400000, guid: 5809639237f8bbc42b64147823503434, type: 2}
   SaucerSettings: {fileID: 11400000, guid: b747cc5b2efbcd64db9c4aae3089ff27, type: 2}

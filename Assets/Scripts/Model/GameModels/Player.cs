@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Model
 {
@@ -9,15 +10,19 @@ namespace Model
 
         public float GivenRotation { get; set; }
         public float GivenAcceleration { get; set; }
+        public Vector3 BarrelPosition => Position + Rotation * PlayerSettings.BarrelPosition;
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
 
-        public Player(Vector3 position, PlayerSettings playerSettings, IField field) : base(position, playerSettings, field)
+        public event Action Fired;
+
+        public Player(Vector3 position, Quaternion rotation, PlayerSettings playerSettings, IField field) : base(position, rotation, playerSettings, field)
         {
         }
         
         public void Fire()
         {
+            Fired?.Invoke();
         }
 
         public void AlternativeFire()

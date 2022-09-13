@@ -8,9 +8,10 @@ namespace Model
         {
         }
 
-        protected override GameModel CreateGameModelObject(Vector3 position)
+        protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            return new Asteroid(position, EnemySettings, Field);
+            var customRotation = Quaternion.Euler(0, Random.Range(-180f, 180f), 0);
+            return new Asteroid(position, customRotation, EnemySettings, Field);
         }
     }
 }

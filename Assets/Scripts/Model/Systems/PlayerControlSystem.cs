@@ -15,7 +15,7 @@ namespace Model
 
         public override void Initialize()
         {
-            CreateGameModel(PlayerSettings.InitialPosition);
+            CreateGameModel(PlayerSettings.InitialPosition, Quaternion.identity);
         }
 
         public override void Execute()
@@ -30,9 +30,9 @@ namespace Model
             Player?.Destroy();
         }
 
-        protected override GameModel CreateGameModelObject(Vector3 position)
+        protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            Player = new Player(position, PlayerSettings, Field);
+            Player = new Player(position, rotation, PlayerSettings, Field);
             return Player;
         }
         

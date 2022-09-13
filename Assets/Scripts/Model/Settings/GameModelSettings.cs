@@ -2,7 +2,8 @@
 
 namespace Model
 {
-    public abstract class GameModelSettings : ScriptableObject
+    [CreateAssetMenu(menuName = "ScriptableObjects/GameModelSettings")]
+    public class GameModelSettings : ScriptableObject
     {
         public GameObject Prefab;
         public float MaxVelocity;

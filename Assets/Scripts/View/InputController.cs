@@ -40,14 +40,14 @@ namespace View
         public void OnFire(InputAction.CallbackContext context)
         {
             var value = context.ReadValueAsButton();
-            if (value)
+            if (context.performed && value)
                 _presenter.Player.Fire();
         }
 
         public void OnAlternativeFire(InputAction.CallbackContext context)
         {
             var value = context.ReadValueAsButton();
-            if (value)
+            if (context.performed && value)
                 _presenter.Player.AlternativeFire();
         }
     }

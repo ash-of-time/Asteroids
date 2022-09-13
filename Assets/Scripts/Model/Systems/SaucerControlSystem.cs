@@ -8,9 +8,9 @@ namespace Model
         {
         }
 
-        protected override GameModel CreateGameModelObject(Vector3 position)
+        protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            return new Saucer(position, EnemySettings, Player, Field);
+            return new Saucer(position, rotation, EnemySettings, Player, Field);
         }
     }
 }

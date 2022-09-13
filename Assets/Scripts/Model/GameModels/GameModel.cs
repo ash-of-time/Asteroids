@@ -7,7 +7,7 @@ namespace Model
     public abstract class GameModel : IUpdatable
     {
         protected readonly GameModelSettings Settings;
-        private readonly IField _field;
+        protected readonly IField _field;
 
         public ReactiveProperty<Vector3> ReactivePosition { get; } = new();
 
@@ -17,7 +17,7 @@ namespace Model
             protected set => ReactivePosition.Set(value);
         }
 
-        public ReactiveProperty<Quaternion> ReactiveRotation { get; } = new(Quaternion.identity);
+        public ReactiveProperty<Quaternion> ReactiveRotation { get; } = new();
 
         public Quaternion Rotation
         {
@@ -29,9 +29,10 @@ namespace Model
 
         public event Action<GameModel> Destroyed;
 
-        protected GameModel(Vector3 position, GameModelSettings settings, IField field)
+        protected GameModel(Vector3 position, Quaternion rotation, GameModelSettings settings, IField field)
         {
             Position = position;
+            Rotation = rotation;
             Settings = settings;
             _field = field;
         }
@@ -53,7 +54,8 @@ namespace Model
 
         protected virtual void Move()
         {
-            Position = _field.GetPointFromOtherSideIfOutOfField(Position);
+            if (_field.IsPointOutOfField(Position))
+                Position = _field.GetPointFromOtherSideIfOutOfField(Position);
         }
     }
 }

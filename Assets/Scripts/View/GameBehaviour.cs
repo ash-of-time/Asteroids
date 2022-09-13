@@ -13,7 +13,7 @@ namespace View
             _game = new Game(_gameSettings);
 
             _game.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
-            _game.EnemyControlSystemCreated += OnEnemyControlSystemCreated;
+            _game.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
             
             _game.Initialize();
         }
@@ -23,7 +23,7 @@ namespace View
             new ViewControlSystem(_game, system);
         }
         
-        private void OnEnemyControlSystemCreated(GameModelControlSystem system)
+        private void OnMultipleGameModelsControlSystemCreated(GameModelControlSystem system)
         {
             new ViewControlSystemWithPool(_game, system);
         }
@@ -37,7 +37,7 @@ namespace View
         private void OnDestroy()
         {
             _game.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
-            _game.EnemyControlSystemCreated -= OnEnemyControlSystemCreated;
+            _game.MultipleGameModelsControlSystemCreated -= OnMultipleGameModelsControlSystemCreated;
             _game.Stop(true);
         }
     }

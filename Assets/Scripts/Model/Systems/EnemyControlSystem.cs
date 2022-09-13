@@ -5,11 +5,10 @@ using UnityEngine;
 
 namespace Model
 {
-    public abstract class EnemyControlSystem : GameModelControlSystem
+    public abstract class EnemyControlSystem : MultipleGameModelsControlSystem
     {
         protected readonly GameModel Player;
-        private readonly List<GameModel> _enemyList;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
         
@@ -18,25 +17,17 @@ namespace Model
         protected EnemyControlSystem(EnemySettings enemySettings, IField field, GameModel player) : base(enemySettings, field)
         {
             Player = player;
-            _enemyList = new List<GameModel>(enemySettings.MaxCount);
+            _gameModelsList = new List<GameModel>(enemySettings.MaxCount);
         }
 
         public override async void Initialize()
         {
             for (var i = 0; i < EnemySettings.InitialCount; i++)
             {
-                CreateGameModel(NewEnemyPosition);
+                CreateGameModel(NewEnemyPosition, Quaternion.identity);
             }
 
             await CreateEnemiesAsync();
-        }
-
-        public override void Execute()
-        {
-            foreach (var enemy in _enemyList)
-            {
-                enemy.Update();
-            }
         }
 
         protected override void OnGameStopped()
@@ -44,26 +35,6 @@ namespace Model
             base.OnGameStopped();
             
             _cancellationTokenSource.Cancel();
-            
-            for (var i = _enemyList.Count - 1; i >= 0; i--)
-            {
-                _enemyList[i].Destroy();
-            }
-        }
-
-        protected override GameModel CreateGameModel(Vector3 position)
-        {
-            var gameModel = base.CreateGameModel(position);
-            _enemyList.Add(gameModel);
-            
-            return gameModel;
-        }
-
-        protected override void OnGameModelDestroyed(GameModel gameModel)
-        {
-            _enemyList.Remove(gameModel);
-            
-            base.OnGameModelDestroyed(gameModel);
         }
         
         private async Task CreateEnemiesAsync()
@@ -74,8 +45,8 @@ namespace Model
                 while (!token.IsCancellationRequested)
                 {
                     await Task.Delay(EnemySettings.CreateCooldown * 1000, token);
-                    if (_enemyList.Count < EnemySettings.MaxCount)
-                        CreateGameModel(NewEnemyPosition);
+                    if (_gameModelsList.Count < EnemySettings.MaxCount)
+                        CreateGameModel(NewEnemyPosition, Quaternion.identity);
                 }
             }
             catch (TaskCanceledException e)

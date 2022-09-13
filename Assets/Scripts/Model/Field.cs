@@ -34,6 +34,14 @@ namespace Model
             return position;
         }
 
+        public bool IsPointOutOfField(Vector3 point)
+        {
+            if (point.x < -HalfWidth || point.x > HalfWidth || point.z < -HalfHeight || point.z > HalfHeight)
+                return true;
+
+            return false;
+        }
+        
         public Vector3 GetPointFromOtherSideIfOutOfField(Vector3 point)
         {
             var x = point.x;
@@ -41,7 +49,7 @@ namespace Model
             
             if (x < -HalfWidth)
                 x = HalfWidth;
-            else if (point.x > HalfWidth)
+            else if (x > HalfWidth)
                 x = -HalfWidth;
             
             if (z < -HalfHeight)

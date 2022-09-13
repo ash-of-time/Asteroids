@@ -6,7 +6,7 @@ namespace Model
     {
         private readonly GameModel _player;
 
-        public Saucer(Vector3 position, EnemySettings saucerSettings, GameModel player, IField field) : base(position, saucerSettings, field)
+        public Saucer(Vector3 position, Quaternion rotation, EnemySettings saucerSettings, GameModel player, IField field) : base(position, rotation, saucerSettings, field)
         {
             _player = player;
         }

@@ -32,7 +32,7 @@ namespace Model
             var count = Random.Range(EnemySettings.InitialCount, EnemySettings.MaxCount + 1);
             for (var i = 0; i < count; i++)
             {
-                CreateGameModel(asteroid.Position);
+                CreateGameModel(asteroid.Position, Quaternion.identity);
             }
         }
     }

@@ -37,6 +37,7 @@ namespace View
                 return;
             
             _gameModel.Collide(otherPresenter.GameModel);
+            otherPresenter.GameModel.Collide(_gameModel);
         }
 
         private void OnDestroy()

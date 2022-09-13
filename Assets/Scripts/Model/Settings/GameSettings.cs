@@ -7,6 +7,7 @@ namespace Model
     {
         public FieldSettings FieldSettings;
         public PlayerSettings PlayerSettings;
+        public GameModelSettings ProjectileSettings;
         public EnemySettings AsteroidSettings;
         public EnemySettings AsteroidPieceSettings;
         public EnemySettings SaucerSettings;

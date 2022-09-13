@@ -9,6 +9,7 @@ namespace Model
         public float Deceleration;
         public float RotationSpeed;
         public Vector3 InitialPosition;
+        public Vector3 BarrelPosition;
         public int FireRate;
         public int AlternativeFireCooldown;
     }
