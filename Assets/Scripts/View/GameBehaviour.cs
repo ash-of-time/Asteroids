@@ -12,12 +12,21 @@ namespace View
 
         private void Start()
         {
+            AdjustFieldSize();
+
             Game.Initialize(_gameSettings);
             
             CreateUi();
             
             Game.Instance.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
             Game.Instance.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
+        }
+
+        private void AdjustFieldSize()
+        {
+            var mainCamera = Camera.main;
+            if (mainCamera != null)
+                _gameSettings.FieldSettings.Size = new Vector2(mainCamera.orthographicSize * 2 * mainCamera.aspect, mainCamera.orthographicSize * 2);
         }
 
         private void CreateUi()

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 151664, guid: 3c43af8e6d91bbc43aff0a310e3a9fa8, type: 3}
   MaxVelocity: 10
-  InitialCount: 1
+  InitialCount: 0
   MaxCount: 1
   CreateCooldown: 5
   PlayerMinimumDistance: 15
