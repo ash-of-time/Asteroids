@@ -18,6 +18,7 @@ namespace Model
 
         public event Action<GameModelControlSystem> PlayerControlSystemCreated;
         public event Action<MultipleGameModelsControlSystem> MultipleGameModelsControlSystemCreated;
+        public event Action<PointsCountSystem> PointsCountSystemCreated;
         public event Action GameStopped;
         
 
@@ -87,6 +88,9 @@ namespace Model
             _executeSystems.Add(saucersControlSystem);
             MultipleGameModelsControlSystemCreated?.Invoke(saucersControlSystem);
             saucersControlSystem.Initialize();
+
+            var pointsCountSystem = new PointsCountSystem(asteroidsControlSystem, asteroidPiecesControlSystem, saucersControlSystem);
+            PointsCountSystemCreated?.Invoke(pointsCountSystem);
         }
 
         private void OnPlayerDestroyed(GameModel player)

@@ -25,7 +25,7 @@ namespace Model
 
         protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            return new Projectile(position, GameModelSettings, Field, rotation);
+            return new Projectile(position, rotation, GameModelSettings, Field);
         }
 
         private void OnPlayerFired()

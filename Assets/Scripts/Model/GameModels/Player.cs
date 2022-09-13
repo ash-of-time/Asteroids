@@ -1,4 +1,5 @@
 ﻿using System;
+using Tools;
 using UnityEngine;
 
 namespace Model
@@ -11,6 +12,14 @@ namespace Model
         public float GivenRotation { get; set; }
         public float GivenAcceleration { get; set; }
         public Vector3 BarrelPosition => Position + Rotation * PlayerSettings.BarrelPosition;
+
+        public ReactiveProperty<float> ReactiveVelocity = new();
+
+        private float Velocity
+        {
+            get => ReactiveVelocity.Get();
+            set => ReactiveVelocity.Set(value);
+        }
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
 
@@ -48,8 +57,8 @@ namespace Model
 
             _velocityDirection = _currentVelocityVector.normalized;
 
-            var velocity = _currentVelocityVector.magnitude;
-            if (_velocityDirection == -ForwardDirection && velocity > 0)
+            Velocity = _currentVelocityVector.magnitude;
+            if (_velocityDirection == -ForwardDirection && Velocity > 0)
                 return;
 
             Position += _currentVelocityVector * Time.deltaTime;

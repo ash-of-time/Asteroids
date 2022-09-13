@@ -9,5 +9,6 @@ namespace Model
         public int MaxCount;
         public int CreateCooldown;
         public int PlayerMinimumDistance;
+        public int Points;
     }
 }

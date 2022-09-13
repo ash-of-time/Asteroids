@@ -18,3 +18,4 @@ MonoBehaviour:
   MaxCount: 10
   CreateCooldown: 5
   PlayerMinimumDistance: 10
+  Points: 5
