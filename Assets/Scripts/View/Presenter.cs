@@ -30,14 +30,10 @@ namespace View
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent<Presenter>(out var otherPresenter))
-                return;
-            
-            if(_gameModel == null || otherPresenter._gameModel == null)
+            if (!other.TryGetComponent<Presenter>(out var otherPresenter) || Game.Instance.IsStopped)
                 return;
             
             _gameModel.Collide(otherPresenter.GameModel);
-            otherPresenter.GameModel.Collide(_gameModel);
         }
 
         private void OnDestroy()
@@ -66,7 +62,7 @@ namespace View
 
             _gameModel = null;
             
-            if (Game.Instance != null && !Game.Instance.Destroyed)
+            if (Game.Instance != null && !Game.Instance.IsDestroyed)
                 ModelDestroyed?.Invoke(this);
         }
     }

@@ -20,6 +20,8 @@ namespace Model
 
         protected override void OnGameStopped()
         {
+            base.OnGameStopped();
+            
             Player.Fired -= OnPlayerFired;
         }
 

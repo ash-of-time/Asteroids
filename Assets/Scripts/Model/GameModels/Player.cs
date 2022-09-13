@@ -15,10 +15,10 @@ namespace Model
 
         public ReactiveProperty<float> ReactiveVelocity = new();
 
-        private float Velocity
+        public float Velocity
         {
             get => ReactiveVelocity.Get();
-            set => ReactiveVelocity.Set(value);
+            private set => ReactiveVelocity.Set(value);
         }
 
         private PlayerSettings PlayerSettings => Settings as PlayerSettings;
@@ -72,9 +72,9 @@ namespace Model
         }
         
         // todo remove Temp
-        public override void Collide(GameModel gameModel)
-        {
+        // public override void Collide(GameModel gameModel)
+        // {
             // do nothing
-        }
+        // }
     }
 }

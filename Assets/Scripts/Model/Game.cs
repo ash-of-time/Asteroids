@@ -1,39 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Tools;
 
 namespace Model
 {
-    public class Game : IInitializeSystem, IExecuteSystem
+    public class Game : IExecuteSystem
     {
         public readonly GameSettings GameSettings;
         private Field _field;
-        private List<IExecuteSystem> _executeSystems = new(); 
+        private List<IExecuteSystem> _executeSystems = new(5); 
         
         public static Game Instance { get; private set; }
         
-        public bool Stopped { get; private set; }
-        public bool Destroyed { get; private set; }
+        public bool IsStopped { get; private set; }
+        public bool IsDestroyed { get; private set; }
 
         public event Action<GameModelControlSystem> PlayerControlSystemCreated;
         public event Action<MultipleGameModelsControlSystem> MultipleGameModelsControlSystemCreated;
         public event Action<PointsCountSystem> PointsCountSystemCreated;
+        public event Action GameStarted;
         public event Action GameStopped;
         
 
-        public Game(GameSettings gameSettings)
+        private Game(GameSettings gameSettings)
         {
-            Instance = this;
             GameSettings = gameSettings;
             _field = new Field(GameSettings.FieldSettings);
         }
 
-        public void Initialize()
+        public static void Initialize(GameSettings gameSettings)
+        {
+            Instance = new Game(gameSettings);
+        }
+
+        public void Start()
         {
             var playerControlSystem = CreatePlayerControlSystem();
             CreateShootingControlSystem(playerControlSystem);
             CreateEnemyControlSystems(playerControlSystem);
+            
+            IsStopped = false;
+            GameStarted?.Invoke();
         }
 
         public void Execute()
@@ -46,10 +53,10 @@ namespace Model
 
         public void Stop(bool destroy)
         {
-            Stopped = true;
-            Destroyed = destroy;
+            IsStopped = true;
+            IsDestroyed = destroy;
+            _executeSystems.Clear();
             GameStopped?.Invoke();
-            Instance = null;
         }
         
         private PlayerControlSystem CreatePlayerControlSystem()
@@ -95,7 +102,7 @@ namespace Model
 
         private void OnPlayerDestroyed(GameModel player)
         {
-            if (!Stopped)
+            if (!IsStopped)
                 Stop(false);
         }
     }

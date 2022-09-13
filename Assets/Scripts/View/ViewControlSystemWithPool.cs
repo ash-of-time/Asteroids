@@ -8,7 +8,7 @@ namespace View
     {
         private readonly ObjectPool<GameObject> _pool;
 
-        public ViewControlSystemWithPool(Game game, GameModelControlSystem controlSystem) : base(game, controlSystem)
+        public ViewControlSystemWithPool(GameModelControlSystem controlSystem) : base(controlSystem)
         {
             _pool = new ObjectPool<GameObject>(InstantiateView, GetView, ReleaseView, DestroyView);
         }

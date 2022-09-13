@@ -26,7 +26,7 @@ namespace Model
 
         private void OnAsteroidDestroyed(GameModel asteroid)
         {
-            if (Game.Instance.Stopped)
+            if (Game.Instance.IsStopped)
                 return;
             
             var count = Random.Range(EnemySettings.InitialCount, EnemySettings.MaxCount + 1);

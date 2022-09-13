@@ -6,51 +6,48 @@ namespace View
     public class GameBehaviour : MonoBehaviour
     {
         [SerializeField] private GameSettings _gameSettings;
-        [SerializeField] private UI _ui;
-        
-        private Game _game;
-        private UiViewModel _uiViewModel;
+        [SerializeField] private WelcomeUiView _welcomeUiView;
+        [SerializeField] private HudView _hudView;
+        [SerializeField] private GameOverUiView _gameOverUiView;
 
         private void Start()
         {
-            _game = new Game(_gameSettings);
-            _uiViewModel = new UiViewModel(_ui);
+            Game.Initialize(_gameSettings);
             
-            _game.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
-            _game.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
-            _game.PointsCountSystemCreated += OnPointsCountSystemCreated;
+            CreateUi();
             
-            _game.Initialize();
+            Game.Instance.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
+            Game.Instance.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
+        }
+
+        private void CreateUi()
+        {
+            new WelcomeUiPresenter(_welcomeUiView);
+            new HudPresenter(_hudView);
+            new GameOverUiPresenter(_gameOverUiView);
         }
 
         private void OnPlayerControlSystemCreated(GameModelControlSystem system)
         {
-            new ViewControlSystem(_game, system);
-            _uiViewModel.SubscribeOnPlayer(system);
+            new ViewControlSystem(system);
         }
         
         private void OnMultipleGameModelsControlSystemCreated(GameModelControlSystem system)
         {
-            new ViewControlSystemWithPool(_game, system);
-        }
-        
-        private void OnPointsCountSystemCreated(PointsCountSystem pointsCountSystem)
-        {
-            _uiViewModel.SubscribeOnPoints(pointsCountSystem);
+            new ViewControlSystemWithPool(system);
         }
 
         private void Update()
         {
-            if (!_game.Stopped)
-                _game.Execute();
+            if (!Game.Instance.IsStopped)
+                Game.Instance.Execute();
         }
 
         private void OnDestroy()
         {
-            _game.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
-            _game.MultipleGameModelsControlSystemCreated -= OnMultipleGameModelsControlSystemCreated;
-            _game.PointsCountSystemCreated -= OnPointsCountSystemCreated;
-            _game.Stop(true);
+            Game.Instance.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
+            Game.Instance.MultipleGameModelsControlSystemCreated -= OnMultipleGameModelsControlSystemCreated;
+            Game.Instance.Stop(true);
         }
     }
 }

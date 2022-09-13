@@ -6,15 +6,13 @@ namespace View
     public class ViewControlSystem
     {
         protected readonly GameModelControlSystem ControlSystem;
-        private readonly Game _game;
 
-        public ViewControlSystem(Game game, GameModelControlSystem controlSystem)
+        public ViewControlSystem(GameModelControlSystem controlSystem)
         {
-            _game = game;
             ControlSystem = controlSystem;
 
             controlSystem.GameModelCreated += OnModelCreated;
-            game.GameStopped += OnGameStooped;
+            Game.Instance.GameStopped += OnGameStooped;
         }
         
         protected virtual void OnModelCreated(GameModel gameModel)
@@ -33,7 +31,7 @@ namespace View
         private void OnGameStooped()
         {
             ControlSystem.GameModelCreated -= OnModelCreated;
-            _game.GameStopped -= OnGameStooped;
+            Game.Instance.GameStopped -= OnGameStooped;
         }
     }
 }
