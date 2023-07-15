@@ -4,23 +4,15 @@ namespace Model
 {
     public class Field : IField
     {
-        public static IField Instance;
-
         private readonly Vector2 _size;
 
         public float HalfWidth => _size.x / 2;
         public float HalfHeight => _size.y / 2;
         public float Diagonal => Mathf.Sqrt(Mathf.Pow(_size.x, 2) + Mathf.Pow(_size.y, 2));
 
-        private Field(FieldSettings fieldSettings)
+        public Field(FieldSettings fieldSettings)
         {
             _size = fieldSettings.Size;
-        }
-
-        public static void CreateInstance(FieldSettings fieldSettings)
-        {
-            if (Instance == null)
-                Instance = new Field(fieldSettings);
         }
 
         public Vector3 GetRandomPosition()

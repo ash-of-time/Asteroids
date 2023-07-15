@@ -9,6 +9,8 @@ namespace View
     {
         [SerializeField] private PlayerPresenter _presenter;
         private PlayerInputActions _controls;
+        
+        public Game Game { get; set; }
 
         public void OnEnable()
         {
@@ -28,7 +30,7 @@ namespace View
 
         public void OnMove(InputAction.CallbackContext context)
         {
-            if (Game.Instance.IsStopped)
+            if (Game.IsStopped)
                 return;
             
             var value = context.ReadValueAsButton();
@@ -37,7 +39,7 @@ namespace View
 
         public void OnRotate(InputAction.CallbackContext context)
         {
-            if (Game.Instance.IsStopped)
+            if (Game.IsStopped)
                 return;
             
             var value = context.ReadValue<float>();
@@ -46,7 +48,7 @@ namespace View
 
         public void OnFire(InputAction.CallbackContext context)
         {
-            if (Game.Instance.IsStopped)
+            if (Game.IsStopped)
                 return;
             
             var value = context.ReadValueAsButton();
@@ -56,7 +58,7 @@ namespace View
 
         public void OnAlternativeFire(InputAction.CallbackContext context)
         {
-            if (Game.Instance.IsStopped)
+            if (Game.IsStopped)
                 return;
             
             var value = context.ReadValueAsButton();

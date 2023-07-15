@@ -4,29 +4,31 @@ namespace View
 {
     public class GameOverUiPresenter
     {
+        private readonly Game _game;
         private readonly GameOverUiView _view;
         private PointsCountSystem _pointsCountSystem;
 
-        public GameOverUiPresenter(GameOverUiView view)
+        public GameOverUiPresenter(Game game, GameOverUiView view)
         {
+            _game = game;
             _view = view;
             _view.Presenter = this;
             _view.SetActive(false);
-            Game.Instance.PointsCountSystemCreated += OnPointsCountSystemCreated;
-            Game.Instance.GameStopped += OnGameStopped;
+            _game.PointsCountSystemCreated += OnPointsCountSystemCreated;
+            _game.GameStopped += OnGameStopped;
         }
 
         public void ButtonClick()
         {
             _view.SetActive(false);
-            Game.Instance.Start();
+            _game.Start();
         }
         
         private void OnPointsCountSystemCreated(PointsCountSystem pointsCountSystem)
         {
             _pointsCountSystem = pointsCountSystem;
-            OnPointsChanged(_pointsCountSystem.Points);
-            _pointsCountSystem.ReactivePoints.Changed += OnPointsChanged;
+            OnPointsChanged(_pointsCountSystem.Points.Value);
+            _pointsCountSystem.Points.Changed += OnPointsChanged;
         }
         
         private void OnPointsChanged(int points)
@@ -36,9 +38,9 @@ namespace View
         
         private void OnGameStopped()
         {
-            _pointsCountSystem.ReactivePoints.Changed -= OnPointsChanged;
+            _pointsCountSystem.Points.Changed -= OnPointsChanged;
             
-            if(!Game.Instance.IsDestroyed)
+            if(!_game.IsDestroyed)
                 _view.SetActive(true);
         }
     }

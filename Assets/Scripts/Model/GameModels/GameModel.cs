@@ -4,35 +4,23 @@ using UnityEngine;
 
 namespace Model
 {
-    public abstract class GameModel : IUpdatable
+    public abstract class GameModel : IGameModel
     {
         protected readonly GameModelSettings Settings;
         protected readonly IField Field;
 
-        public ReactiveProperty<Vector3> ReactivePosition { get; } = new();
+        public ReactiveProperty<Vector3> Position { get; } = new();
 
-        public Vector3 Position
-        {
-            get => ReactivePosition.Get();
-            protected set => ReactivePosition.Set(value);
-        }
+        public ReactiveProperty<Quaternion> Rotation { get; } = new();
 
-        public ReactiveProperty<Quaternion> ReactiveRotation { get; } = new();
+        public Vector3 ForwardDirection => Rotation.Value * Vector3.forward;
 
-        public Quaternion Rotation
-        {
-            get => ReactiveRotation.Get();
-            protected set => ReactiveRotation.Set(value);
-        }
-
-        public Vector3 ForwardDirection => Rotation * Vector3.forward;
-
-        public event Action<GameModel, bool> Destroyed;
+        public event Action<IGameModel, bool> Destroyed;
 
         protected GameModel(Vector3 position, Quaternion rotation, GameModelSettings settings, IField field)
         {
-            Position = position;
-            Rotation = rotation;
+            Position.Value = position;
+            Rotation.Value = rotation;
             Settings = settings;
             Field = field;
         }
@@ -42,7 +30,7 @@ namespace Model
             Move();
         }
 
-        public virtual void Collide(GameModel gameModel)
+        public virtual void Collide(IGameModel gameModel)
         {
             Destroy(false);
         }
@@ -54,8 +42,9 @@ namespace Model
 
         protected virtual void Move()
         {
-            if (Field.IsPointOutOfField(Position))
-                Position = Field.GetPointFromOtherSideIfOutOfField(Position);
+            var position = Position.Value;
+            if (Field.IsPointOutOfField(position))
+                Position.Value = Field.GetPointFromOtherSideIfOutOfField(position);
         }
     }
 }

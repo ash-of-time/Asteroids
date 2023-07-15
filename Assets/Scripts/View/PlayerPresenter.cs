@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Model;
 using UnityEngine;
 
@@ -8,25 +8,33 @@ namespace View
     public class PlayerPresenter : Presenter
     {
         private const int EnemyLayerMask = 1 << 6;
+        
         [SerializeField] private GameObject Laser;
 
-        public Player Player => GameModel as Player;
+        public IPlayer Player => GameModel as Player;
+        
+        private RaycastHit[] _raycastHits;
 
         public void AlternativeFire()
         {
-            var hits = Physics.RaycastAll(Player.Position, Player.ForwardDirection, Field.Instance.Diagonal, EnemyLayerMask);
-            var hitModelsList = new List<GameModel>();
-            foreach (var enemy in hits)
+            _raycastHits ??= CreateRaycastHitArray();
+            Physics.RaycastNonAlloc(Player.Position.Value, Player.ForwardDirection, _raycastHits, Game.Field.Diagonal, EnemyLayerMask);
+            var hitModels = _raycastHits.Where(hit => hit.transform != null)
+                .Select(enemy => enemy.transform.GetComponent<Presenter>().GameModel);
+            if (Player.TryAlternativeFire(hitModels))
             {
-                var model = enemy.transform.GetComponent<Presenter>().GameModel;
-                hitModelsList.Add(model);
-            }
-
-            if (Player.TryAlternativeFire(hitModelsList))
-            {
-                Laser.transform.localScale = new Vector3(1, 1, Field.Instance.Diagonal);
+                Laser.transform.localScale = new Vector3(1, 1, Game.Field.Diagonal);
                 Laser.SetActive(true);
             }
+        }
+
+        private RaycastHit[] CreateRaycastHitArray()
+        {
+            var gameSettings = Game.GameSettings;
+            var size = gameSettings.AsteroidSettings.MaxCount +
+                       gameSettings.AsteroidPieceSettings.MaxCount +
+                       gameSettings.SaucerSettings.MaxCount;
+            return new RaycastHit[size];
         }
     }
 }

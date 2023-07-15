@@ -11,11 +11,12 @@ namespace Model
 
         protected EnemySettings EnemySettings => GameModelSettings as EnemySettings;
         
-        private Vector3 NewEnemyPosition => Field.Instance.GetRandomPositionFarFromPoint(Player.Position, EnemySettings.PlayerMinimumDistance);
+        private Vector3 NewEnemyPosition => Game.Field.GetRandomPositionFarFromPoint(Player.Position.Value, EnemySettings.PlayerMinimumDistance);
 
-        protected EnemyControlSystem(EnemySettings enemySettings, GameModelControlSystem relatedControlSystem) : base(enemySettings, relatedControlSystem)
+        protected EnemyControlSystem(Game game, EnemySettings enemySettings, GameModelControlSystem
+            relatedControlSystem) : base(game, enemySettings, relatedControlSystem)
         {
-            GameModelsList = new List<GameModel>(enemySettings.MaxCount);
+            GameModelsList = new List<IGameModel>(enemySettings.MaxCount);
         }
 
         public override async void Initialize()

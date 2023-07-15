@@ -6,31 +6,33 @@ namespace View
 {
     public class Presenter : MonoBehaviour
     {
-        private GameModel _gameModel;
+        protected Game Game;
+        private IGameModel _gameModel;
 
         public event Action<Presenter> ModelDestroyed;
 
-        public GameModel GameModel
+        public IGameModel GameModel => _gameModel;
+
+        public void Initialize(Game game, IGameModel gameModel)
         {
-            get => _gameModel;
-            set
-            {
-                _gameModel = value;
-                
-                if (_gameModel == null)
-                    return;
-                
-                PositionChanged(_gameModel.Position);
-                RotationChanged(_gameModel.Rotation);
-                _gameModel.ReactivePosition.Changed += PositionChanged;
-                _gameModel.ReactiveRotation.Changed += RotationChanged;
-                _gameModel.Destroyed += OnGameModelDestroyed;
-            }
+            Game = game;
+            _gameModel = gameModel;
+            
+            if (_gameModel == null)
+                return;
+
+            var position = _gameModel.Position;
+            var rotation = _gameModel.Rotation;
+            PositionChanged(position.Value);
+            RotationChanged(rotation.Value);
+            position.Changed += PositionChanged;
+            rotation.Changed += RotationChanged;
+            _gameModel.Destroyed += OnGameModelDestroyed;
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent<Presenter>(out var otherPresenter) || Game.Instance.IsStopped)
+            if (!other.TryGetComponent<Presenter>(out var otherPresenter) || Game.IsStopped)
                 return;
             
             _gameModel.Collide(otherPresenter.GameModel);
@@ -51,18 +53,18 @@ namespace View
             transform.rotation = rotation;
         }
         
-        private void OnGameModelDestroyed(GameModel model, bool totally)
+        private void OnGameModelDestroyed(IGameModel model, bool totally)
         {
             if (_gameModel == null)
                 return;
             
-            _gameModel.ReactivePosition.Changed -= PositionChanged;
-            _gameModel.ReactiveRotation.Changed -= RotationChanged;
+            _gameModel.Position.Changed -= PositionChanged;
+            _gameModel.Rotation.Changed -= RotationChanged;
             _gameModel.Destroyed -= OnGameModelDestroyed;
 
             _gameModel = null;
             
-            if (Game.Instance != null && !Game.Instance.IsDestroyed)
+            if (Game != null && !Game.IsDestroyed)
                 ModelDestroyed?.Invoke(this);
         }
     }

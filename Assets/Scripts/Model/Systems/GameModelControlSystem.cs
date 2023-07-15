@@ -7,15 +7,17 @@ namespace Model
     public abstract class GameModelControlSystem : IInitializeSystem, IExecuteSystem
     {
         public readonly GameModelSettings GameModelSettings;
+        protected readonly Game Game;
         
-        public event Action<GameModel> GameModelCreated;
-        public event Action<GameModel, bool> GameModelDestroyed;
+        public event Action<IGameModel> GameModelCreated;
+        public event Action<IGameModel, bool> GameModelDestroyed;
 
-        protected GameModelControlSystem(GameModelSettings gameModelSettings)
+        protected GameModelControlSystem(Game game, GameModelSettings gameModelSettings)
         {
+            Game = game;
             GameModelSettings = gameModelSettings;
 
-            Game.Instance.GameStopped += OnGameStopped;
+            Game.GameStopped += OnGameStopped;
         }
 
         public abstract void Initialize();
@@ -24,12 +26,12 @@ namespace Model
 
         protected virtual void OnGameStopped()
         {
-            Game.Instance.GameStopped -= OnGameStopped;
+            Game.GameStopped -= OnGameStopped;
         }
 
-        protected abstract GameModel CreateGameModelObject(Vector3 position, Quaternion rotation);
+        protected abstract IGameModel CreateGameModelObject(Vector3 position, Quaternion rotation);
 
-        protected virtual GameModel CreateGameModel(Vector3 position, Quaternion rotation)
+        protected virtual IGameModel CreateGameModel(Vector3 position, Quaternion rotation)
         {
             var gameModel = CreateGameModelObject(position, rotation);
             gameModel.Destroyed += OnGameModelDestroyed;
@@ -38,7 +40,7 @@ namespace Model
             return gameModel;
         }
         
-        protected virtual void OnGameModelDestroyed(GameModel gameModel, bool totally)
+        protected virtual void OnGameModelDestroyed(IGameModel gameModel, bool totally)
         {
             gameModel.Destroyed -= OnGameModelDestroyed;
             GameModelDestroyed?.Invoke(gameModel, totally);

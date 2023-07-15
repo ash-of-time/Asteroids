@@ -6,12 +6,12 @@ namespace Model
     public abstract class MultipleGameModelsControlSystem : GameModelControlSystem
     {
         protected readonly GameModelControlSystem RelatedControlSystem;
-        protected List<GameModel> GameModelsList;
+        protected List<IGameModel> GameModelsList;
 
         protected readonly Player Player;
 
-        protected MultipleGameModelsControlSystem(GameModelSettings gameModelSettings, GameModelControlSystem relatedControlSystem) :
-            base(gameModelSettings)
+        protected MultipleGameModelsControlSystem(Game game, GameModelSettings gameModelSettings,
+            GameModelControlSystem relatedControlSystem) : base(game, gameModelSettings)
         {
             RelatedControlSystem = relatedControlSystem;
             if (RelatedControlSystem is PlayerControlSystem playerControlSystem)
@@ -36,7 +36,7 @@ namespace Model
             }
         }
 
-        protected override GameModel CreateGameModel(Vector3 position, Quaternion rotation)
+        protected override IGameModel CreateGameModel(Vector3 position, Quaternion rotation)
         {
             var gameModel = base.CreateGameModel(position, rotation);
             GameModelsList.Add(gameModel);
@@ -44,7 +44,7 @@ namespace Model
             return gameModel;
         }
 
-        protected override void OnGameModelDestroyed(GameModel gameModel, bool totally)
+        protected override void OnGameModelDestroyed(IGameModel gameModel, bool totally)
         {
             GameModelsList.Remove(gameModel);
 

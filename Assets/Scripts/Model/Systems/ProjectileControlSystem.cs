@@ -5,9 +5,10 @@ namespace Model
 {
     public class ProjectileControlSystem : MultipleGameModelsControlSystem
     {
-        public ProjectileControlSystem(GameModelSettings gameModelSettings, PlayerControlSystem playerControlSystem) : base(gameModelSettings, playerControlSystem)
+        public ProjectileControlSystem(Game game, GameModelSettings gameModelSettings,
+            PlayerControlSystem playerControlSystem) : base(game, gameModelSettings, playerControlSystem)
         {
-            GameModelsList = new List<GameModel>();
+            GameModelsList = new List<IGameModel>();
         }
 
         public override void Initialize()
@@ -22,14 +23,14 @@ namespace Model
             Player.Fired -= OnPlayerFired;
         }
 
-        protected override GameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
+        protected override IGameModel CreateGameModelObject(Vector3 position, Quaternion rotation)
         {
-            return new Projectile(position, rotation, GameModelSettings, Field.Instance);
+            return new Projectile(position, rotation, GameModelSettings, Game.Field);
         }
 
         private void OnPlayerFired()
         {
-            base.CreateGameModel(Player.BarrelPosition, Player.Rotation);
+            base.CreateGameModel(Player.BarrelPosition, Player.Rotation.Value);
         }
     }
 }

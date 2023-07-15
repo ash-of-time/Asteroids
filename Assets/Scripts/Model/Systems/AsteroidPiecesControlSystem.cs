@@ -6,7 +6,8 @@ namespace Model
     {
         private EnemyControlSystem AsteroidControlSystem => RelatedControlSystem as EnemyControlSystem;
 
-        public AsteroidPiecesControlSystem(EnemySettings asteroidPiecesSettings, GameModelControlSystem asteroidControlSystem) : base(asteroidPiecesSettings, asteroidControlSystem)
+        public AsteroidPiecesControlSystem(Game game, EnemySettings asteroidPiecesSettings,
+            GameModelControlSystem asteroidControlSystem) : base(game, asteroidPiecesSettings, asteroidControlSystem)
         {
         }
 
@@ -22,7 +23,7 @@ namespace Model
             AsteroidControlSystem.GameModelDestroyed -= OnAsteroidDestroyed;
         }
 
-        private void OnAsteroidDestroyed(GameModel asteroid, bool totally)
+        private void OnAsteroidDestroyed(IGameModel asteroid, bool totally)
         {
             if (totally)
                 return;
@@ -30,7 +31,7 @@ namespace Model
             var count = Random.Range(EnemySettings.InitialCount, EnemySettings.MaxCount + 1);
             for (var i = 0; i < count; i++)
             {
-                CreateGameModel(asteroid.Position, Quaternion.identity);
+                CreateGameModel(asteroid.Position.Value, Quaternion.identity);
             }
         }
     }

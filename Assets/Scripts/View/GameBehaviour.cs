@@ -10,16 +10,18 @@ namespace View
         [SerializeField] private HudView _hudView;
         [SerializeField] private GameOverUiView _gameOverUiView;
 
+        private Game _game;
+
         private void Start()
         {
             AdjustFieldSize();
 
-            Game.Initialize(_gameSettings);
+            _game = new Game(_gameSettings);
             
             CreateUi();
             
-            Game.Instance.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
-            Game.Instance.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
+            _game.PlayerControlSystemCreated += OnPlayerControlSystemCreated;
+            _game.MultipleGameModelsControlSystemCreated += OnMultipleGameModelsControlSystemCreated;
         }
 
         private void AdjustFieldSize()
@@ -31,32 +33,32 @@ namespace View
 
         private void CreateUi()
         {
-            new WelcomeUiPresenter(_welcomeUiView);
-            new HudPresenter(_hudView);
-            new GameOverUiPresenter(_gameOverUiView);
+            new WelcomeUiPresenter(_game, _welcomeUiView);
+            new HudPresenter(_game, _hudView);
+            new GameOverUiPresenter(_game, _gameOverUiView);
         }
 
         private void OnPlayerControlSystemCreated(GameModelControlSystem system)
         {
-            new ViewControlSystem(system);
+            new PlayerViewControlSystem(_game, system);
         }
         
         private void OnMultipleGameModelsControlSystemCreated(GameModelControlSystem system)
         {
-            new ViewControlSystemWithPool(system);
+            new ViewControlSystemWithPool(_game, system);
         }
 
         private void Update()
         {
-            if (!Game.Instance.IsStopped)
-                Game.Instance.Execute();
+            if (!_game.IsStopped)
+                _game.Execute();
         }
 
         private void OnDestroy()
         {
-            Game.Instance.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
-            Game.Instance.MultipleGameModelsControlSystemCreated -= OnMultipleGameModelsControlSystemCreated;
-            Game.Instance.Stop(true);
+            _game.PlayerControlSystemCreated -= OnPlayerControlSystemCreated;
+            _game.MultipleGameModelsControlSystemCreated -= OnMultipleGameModelsControlSystemCreated;
+            _game.Stop(true);
         }
     }
 }

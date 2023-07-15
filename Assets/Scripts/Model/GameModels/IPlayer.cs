@@ -2,11 +2,11 @@
 
 namespace Model
 {
-    public interface IPlayer
+    public interface IPlayer : IGameModel
     {
         public float GivenRotation { get; set; }
         public float GivenAcceleration { get; set; }
         public void Fire();
-        public bool TryAlternativeFire(List<GameModel> hitModelsList);
+        public bool TryAlternativeFire(IEnumerable<IGameModel> hitModelsList);
     }
 }

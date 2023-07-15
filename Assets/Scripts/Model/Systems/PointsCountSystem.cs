@@ -5,24 +5,20 @@ namespace Model
 {
     public class PointsCountSystem
     {
+        private readonly Game _game;
         private readonly List<EnemyControlSystem> _enemyControlSystems = new(3);
 
-        public ReactiveProperty<int> ReactivePoints { get; } = new();
+        public ReactiveProperty<int> Points { get; } = new();
 
-        public int Points
+        public PointsCountSystem(Game game)
         {
-            get => ReactivePoints.Get();
-            private set => ReactivePoints.Set(value);
-        }
-
-        public PointsCountSystem()
-        {
+            _game = game;
             foreach (var system in _enemyControlSystems)
             {
                 system.GameModelDestroyed += OnGameModelDestroyed;
             }
             
-            Game.Instance.GameStopped += OnGameStopped;
+            _game.GameStopped += OnGameStopped;
         }
 
         public void Add(EnemyControlSystem enemyControlSystem)
@@ -31,10 +27,10 @@ namespace Model
             enemyControlSystem.GameModelDestroyed += OnGameModelDestroyed;
         }
 
-        private void OnGameModelDestroyed(GameModel gameModel, bool totally)
+        private void OnGameModelDestroyed(IGameModel gameModel, bool totally)
         {
             if (gameModel is Enemy enemy)
-                Points += enemy.Points;
+                Points.Value += enemy.Points;
         }
         
         private void OnGameStopped()
@@ -44,7 +40,7 @@ namespace Model
                 system.GameModelDestroyed -= OnGameModelDestroyed;
             }
             
-            Game.Instance.GameStopped -= OnGameStopped;
+            _game.GameStopped -= OnGameStopped;
         }
     }
 }

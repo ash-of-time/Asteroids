@@ -3,24 +3,21 @@ using UnityEngine;
 
 namespace View
 {
-    public class ViewControlSystem
+    public abstract class ViewControlSystem
     {
+        protected readonly Game Game;
         protected readonly GameModelControlSystem ControlSystem;
 
-        public ViewControlSystem(GameModelControlSystem controlSystem)
+        public ViewControlSystem(Game game, GameModelControlSystem controlSystem)
         {
+            Game = game;
             ControlSystem = controlSystem;
 
             controlSystem.GameModelCreated += OnModelCreated;
-            Game.Instance.GameStopped += OnGameStooped;
+            Game.GameStopped += OnGameStooped;
         }
-        
-        protected virtual void OnModelCreated(GameModel gameModel)
-        {
-            var presenter = Object.Instantiate(ControlSystem.GameModelSettings.Prefab, gameModel.Position, gameModel.Rotation).GetComponent<Presenter>();
-            presenter.GameModel = gameModel;
-            presenter.ModelDestroyed += OnModelDestroyed;
-        }
+
+        protected abstract void OnModelCreated(IGameModel gameModel);
         
         protected virtual void OnModelDestroyed(Presenter presenter)
         {
@@ -31,7 +28,7 @@ namespace View
         private void OnGameStooped()
         {
             ControlSystem.GameModelCreated -= OnModelCreated;
-            Game.Instance.GameStopped -= OnGameStooped;
+            Game.GameStopped -= OnGameStooped;
         }
     }
 }

@@ -8,6 +8,16 @@ namespace Tools
 
         public event Action<T> Changed;
 
+        public T Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                Changed?.Invoke(value);
+            }
+        }
+
         public ReactiveProperty()
         {
             _value = default(T);
@@ -16,14 +26,6 @@ namespace Tools
         public ReactiveProperty(T value)
         {
             _value = value;
-        }
-
-        public T Get() => _value;
-
-        public void Set(T value)
-        {
-            _value = value;
-            Changed?.Invoke(value);
         }
     }
 }

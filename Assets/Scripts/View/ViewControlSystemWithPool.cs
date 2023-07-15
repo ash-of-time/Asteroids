@@ -8,15 +8,15 @@ namespace View
     {
         private readonly ObjectPool<GameObject> _pool;
 
-        public ViewControlSystemWithPool(GameModelControlSystem controlSystem) : base(controlSystem)
+        public ViewControlSystemWithPool(Game game, GameModelControlSystem controlSystem) : base(game, controlSystem)
         {
             _pool = new ObjectPool<GameObject>(InstantiateView, GetView, ReleaseView, DestroyView);
         }
 
-        protected override void OnModelCreated(GameModel gameModel)
+        protected override void OnModelCreated(IGameModel gameModel)
         {
             var presenter = _pool.Get().GetComponent<Presenter>();
-            presenter.GameModel = gameModel;
+            presenter.Initialize(Game, gameModel);
             presenter.ModelDestroyed += OnModelDestroyed;
         }
         

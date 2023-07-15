@@ -10,9 +10,9 @@ namespace Model
 
         protected override void Move()
         {
-            Position += ForwardDirection * (Settings.MaxVelocity * Time.deltaTime);
+            Position.Value += ForwardDirection * (Settings.MaxVelocity * Time.deltaTime);
 
-            if (Field.IsPointOutOfField(Position))
+            if (Field.IsPointOutOfField(Position.Value))
                 Destroy(false);
         }
     }

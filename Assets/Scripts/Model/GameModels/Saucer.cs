@@ -13,8 +13,8 @@ namespace Model
 
         protected override void Move()
         {
-            var direction = (_player.Position - Position).normalized;
-            Position += direction * (Settings.MaxVelocity * Time.deltaTime);
+            var direction = (_player.Position.Value - Position.Value).normalized;
+            Position.Value += direction * (Settings.MaxVelocity * Time.deltaTime);
             
             base.Move();
         }

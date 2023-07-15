@@ -6,11 +6,10 @@ namespace Model
 {
     public class Game : IExecuteSystem
     {
-        private readonly GameSettings _gameSettings;
         private readonly List<GameModelControlSystem> _gameModelControlSystems = new(5);
 
-        public static Game Instance { get; private set; }
-
+        public GameSettings GameSettings { get; private set; }
+        public IField Field { get; private set; }
         public bool IsStopped { get; private set; }
         public bool IsDestroyed { get; private set; }
 
@@ -21,15 +20,10 @@ namespace Model
         public event Action GameStopped;
 
 
-        private Game(GameSettings gameSettings)
+        public Game(GameSettings gameSettings)
         {
-            _gameSettings = gameSettings;
-            Field.CreateInstance(_gameSettings.FieldSettings);
-        }
-
-        public static void Initialize(GameSettings gameSettings)
-        {
-            Instance = new Game(gameSettings);
+            GameSettings = gameSettings;
+            Field = new Field(GameSettings.FieldSettings);
         }
 
         public void Start()
@@ -61,7 +55,7 @@ namespace Model
 
         private PlayerControlSystem CreatePlayerControlSystem()
         {
-            var playerControlSystem = new PlayerControlSystem(_gameSettings.PlayerSettings);
+            var playerControlSystem = new PlayerControlSystem(this, GameSettings.PlayerSettings);
             playerControlSystem.GameModelDestroyed += OnPlayerDestroyed;
             _gameModelControlSystems.Add(playerControlSystem);
 
@@ -73,19 +67,19 @@ namespace Model
 
         private void CreateShootingControlSystem(PlayerControlSystem playerControlSystem)
         {
-            CreateMultipleGameModelsControlSystem<ProjectileControlSystem>(_gameSettings.ProjectileSettings, playerControlSystem);
+            CreateMultipleGameModelsControlSystem<ProjectileControlSystem>(GameSettings.ProjectileSettings, playerControlSystem);
         }
 
         private void CreateEnemyControlSystems(PlayerControlSystem playerControlSystem)
         {
-            var asteroidsControlSystem = CreateMultipleGameModelsControlSystem<AsteroidControlSystem>(_gameSettings.AsteroidSettings, playerControlSystem);
-            CreateMultipleGameModelsControlSystem<AsteroidPiecesControlSystem>(_gameSettings.AsteroidPieceSettings, asteroidsControlSystem);
-            CreateMultipleGameModelsControlSystem<SaucerControlSystem>(_gameSettings.SaucerSettings, playerControlSystem);
+            var asteroidsControlSystem = CreateMultipleGameModelsControlSystem<AsteroidControlSystem>(GameSettings.AsteroidSettings, playerControlSystem);
+            CreateMultipleGameModelsControlSystem<AsteroidPiecesControlSystem>(GameSettings.AsteroidPieceSettings, asteroidsControlSystem);
+            CreateMultipleGameModelsControlSystem<SaucerControlSystem>(GameSettings.SaucerSettings, playerControlSystem);
         }
 
         private void CreatePointsCountSystem()
         {
-            var pointsCountSystem = new PointsCountSystem();
+            var pointsCountSystem = new PointsCountSystem(this);
             foreach (var controlSystem in _gameModelControlSystems)
             {
                 if (controlSystem is EnemyControlSystem enemyControlSystem)
@@ -97,7 +91,7 @@ namespace Model
         
         private T CreateMultipleGameModelsControlSystem<T>(GameModelSettings gameModelSettings, GameModelControlSystem relatedControlSystem) where T : MultipleGameModelsControlSystem
         {
-            var controlSystem = (T)Activator.CreateInstance(typeof(T), gameModelSettings, relatedControlSystem);
+            var controlSystem = (T)Activator.CreateInstance(typeof(T), this, gameModelSettings, relatedControlSystem);
             _gameModelControlSystems.Add(controlSystem);
             MultipleGameModelsControlSystemCreated?.Invoke(controlSystem);
             controlSystem.Initialize();
@@ -105,7 +99,7 @@ namespace Model
             return controlSystem;
         }
 
-        private void OnPlayerDestroyed(GameModel player, bool totally)
+        private void OnPlayerDestroyed(IGameModel player, bool totally)
         {
             if (!IsStopped)
                 Stop(false);
