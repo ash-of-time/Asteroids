@@ -8,9 +8,11 @@ namespace Model
 	{
 		public event Action<IGameModel, bool> Destroyed;
 		
-		public ReactiveProperty<Vector3> Position { get; }
+		public GameModelSettings Settings  { get; }
+		
+		public IReadOnlyReactiveProperty<Vector3> Position { get; }
 
-		public ReactiveProperty<Quaternion> Rotation { get; }
+		public IReadOnlyReactiveProperty<Quaternion> Rotation { get; }
 		
 		public Vector3 ForwardDirection { get; }
 

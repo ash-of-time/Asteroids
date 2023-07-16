@@ -10,7 +10,7 @@ namespace View
         private readonly HudView _view;
         private GameModelControlSystem _playerControlSystem;
         private PointsCountSystem _pointsCountSystem;
-        private Player _player;
+        private IPlayer _player;
 
         public HudPresenter(Game game, HudView view)
         {

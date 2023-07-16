@@ -2,7 +2,7 @@
 
 namespace Tools
 {
-    public class ReactiveProperty<T>
+    public class ReactiveProperty<T> : IReadOnlyReactiveProperty<T>
     {
         private T _value;
 

@@ -7,8 +7,9 @@ namespace Model
     {
         private readonly Game _game;
         private readonly List<EnemyControlSystem> _enemyControlSystems = new(3);
+        private readonly ReactiveProperty<int> _points = new();
 
-        public ReactiveProperty<int> Points { get; } = new();
+        public IReadOnlyReactiveProperty<int> Points => _points;
 
         public PointsCountSystem(Game game)
         {
@@ -30,7 +31,7 @@ namespace Model
         private void OnGameModelDestroyed(IGameModel gameModel, bool totally)
         {
             if (gameModel is Enemy enemy)
-                Points.Value += enemy.Points;
+                _points.Value += enemy.Points;
         }
         
         private void OnGameStopped()

@@ -6,12 +6,15 @@ namespace Model
 {
     public abstract class GameModel : IGameModel
     {
-        protected readonly GameModelSettings Settings;
         protected readonly IField Field;
+        protected ReactiveProperty<Vector3> _position = new();
+        protected ReactiveProperty<Quaternion> _rotation = new();
+        
+        public GameModelSettings Settings  { get; private set; }
 
-        public ReactiveProperty<Vector3> Position { get; } = new();
+        public IReadOnlyReactiveProperty<Vector3> Position => _position;
 
-        public ReactiveProperty<Quaternion> Rotation { get; } = new();
+        public IReadOnlyReactiveProperty<Quaternion> Rotation => _rotation;
 
         public Vector3 ForwardDirection => Rotation.Value * Vector3.forward;
 
@@ -19,8 +22,8 @@ namespace Model
 
         protected GameModel(Vector3 position, Quaternion rotation, GameModelSettings settings, IField field)
         {
-            Position.Value = position;
-            Rotation.Value = rotation;
+            _position.Value = position;
+            _rotation.Value = rotation;
             Settings = settings;
             Field = field;
         }
@@ -44,7 +47,7 @@ namespace Model
         {
             var position = Position.Value;
             if (Field.IsPointOutOfField(position))
-                Position.Value = Field.GetPointFromOtherSideIfOutOfField(position);
+                _position.Value = Field.GetPointFromOtherSideIfOutOfField(position);
         }
     }
 }
