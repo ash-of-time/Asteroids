@@ -45,5 +45,11 @@ namespace View
         {
             Object.Destroy(view);
         }
+
+        protected override void OnGameStopped()
+        {
+            base.OnGameStopped();
+            _pool.Dispose();
+        }
     }
 }

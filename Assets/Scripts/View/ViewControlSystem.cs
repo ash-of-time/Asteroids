@@ -14,7 +14,7 @@ namespace View
             ControlSystem = controlSystem;
 
             controlSystem.GameModelCreated += OnModelCreated;
-            Game.GameStopped += OnGameStooped;
+            Game.GameStopped += OnGameStopped;
         }
 
         protected abstract void OnModelCreated(IGameModel gameModel);
@@ -25,10 +25,10 @@ namespace View
             Object.Destroy(presenter.gameObject);
         }
 
-        private void OnGameStooped()
+        protected virtual void OnGameStopped()
         {
             ControlSystem.GameModelCreated -= OnModelCreated;
-            Game.GameStopped -= OnGameStooped;
+            Game.GameStopped -= OnGameStopped;
         }
     }
 }
